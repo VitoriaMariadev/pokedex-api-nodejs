@@ -31,56 +31,35 @@ const MostrarPeloID = async (req, res) => {
 
 const CadastrarPokemonControllers = async (req, res) => {
 
-        const { 
-            nome, descricao, altura, peso, categoria_id, genero_id, total, hp, ataque, defesa, especial_ataque, especial_defesa, velocidade
-        } = req.body
+    const { 
+        nome, descricao, altura, peso, categoria_id, genero_id, total, hp, ataque, defesa, especial_ataque, especial_defesa, velocidade
+    } = req.body
 
-        if (!nome || !descricao || !altura || !peso || !categoria_id || !genero_id || !total || !hp || !ataque || !defesa || !especial_ataque || !especial_defesa || !velocidade) {
-             res.status(200).json({Mensagem: 'Há campo(s) vazio(s).', status: 400})
-        } else {
-            console.log('não tá vazio')
-            try {
-                // const verificaCategoria = await pool.query("Select categorias from categoria")
-                // if (verificaCategoria === categoria_id) {
-                //     return res.status(200).json({Mensagem: "Categoria já cadastrada."})
-                // } else {
-                //     const insereCategoria = await pool.query("Insert into categorias Values($1)," [categoria_id])
-                // } if (verificaTipo === tipo) {
-                //     return res.status(200).json({Mensagem: "Tipo já cadastrada."})
-                // } else {
-                //     const insereGenero = await pool.query("Insert into generos Values($1)," [genero_id])
-                // }  
+    if (!nome || !descricao || !altura || !peso || !categoria_id || !genero_id || !total || !hp || !ataque || !defesa || !especial_ataque || !especial_defesa || !velocidade) {
+            res.status(200).json({Mensagem: 'Há campo(s) vazio(s).', status: 400})
+    } else {
+        console.log('não tá vazio')
+        try {
+            // const verificaCategoria = await pool.query("Select categorias from categoria")
+            // if (verificaCategoria === categoria_id) {
+            //     return res.status(200).json({Mensagem: "Categoria já cadastrada."})
+            // } else {
+            //     const insereCategoria = await pool.query("Insert into categorias Values($1)," [categoria_id])
+            // } if (verificaTipo === tipo) {
+            //     return res.status(200).json({Mensagem: "Tipo já cadastrada."})
+            // } else {
+            //     const insereGenero = await pool.query("Insert into generos Values($1)," [genero_id])
+            // }  
 
-                const CadastroPokemon = await pool.query(`INSERT INTO pokemon_info(
-                    nome, descricao, altura, peso, categoria_id, genero_id, total, hp, ataque, defesa, especial_ataque, especial_defesa, velocidade)
-                    VALUES (${nome}, ${descricao}, ${altura}, ${peso}, ${categoria_id}, ${genero_id}, ${total}, ${hp}, ${ataque}, ${defesa}, ${especial_ataque}, ${especial_defesa}, ${velocidade});`)
-
-                res.status(200).json(
-                    {
-                        user: {
-                            id: CadastroPokemon._id,
-                            nome,
-                            tipo,
-                            fraqueza, 
-                            habilidade, 
-                            descricao, 
-                            altura, 
-                            peso, 
-                            categoria_id, 
-                            genero_id, 
-                            total, 
-                            hp, 
-                            ataque 
-                        },
-                        Mensagem: "Pokemon cadastrado com sucesso."
-                })
+            const CadastroPokemon = await pool.query(`INSERT INTO public.pokemon_info(nome, descricao, altura, peso, categoria_id, genero_id, total, hp, ataque, defesa, especial_ataque, especial_defesa, velocidade) VALUES ('${nome}', '${descricao}', ${altura}, ${peso}, ${categoria_id}, ${genero_id}, ${total}, ${hp}, ${ataque}, ${defesa}, ${especial_ataque}, ${especial_defesa}, ${velocidade});`)
+            res.status(200).json({CadastroPokemon,
+                    Mensagem: "Pokemon cadastrado com sucesso."})
+        }
+            catch (erro) {
+                return res.status(500).json({Mensagem:"Erro ao cadastrar pokemon.", erro})
+                
             }
-                catch (erro) {
-                    console.log(erro)
-                    return res.status(500).json({Mensagem:"Erro ao cadastrar pokemon."})
-                    
-                }
-        } 
+    } 
     }
 
 export {
