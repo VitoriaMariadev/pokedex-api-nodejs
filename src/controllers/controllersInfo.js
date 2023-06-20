@@ -9,7 +9,7 @@ const MostrarTodosControllers = async (req, res) => {
             res.status(200).json({Mensagem: "Não há pokemons cadastrados."})
         }
 
-        res.status(200).json(Pokemons.rows[0])
+        res.status(200).json(Pokemons.rows)
 
     } catch (erro) {
         res.status(500).json({Mensagem: erro.Mensagem})
@@ -33,43 +33,45 @@ const MostrarPeloID = async (req, res) => {
 const CadastrarPokemonControllers = async (req, res) => {
 
     const { 
-        nome, descricao, altura, peso, categoria_id, genero_id, total, hp, ataque, defesa, especial_ataque, especial_defesa, velocidade
+        pokemon_info_id, nome, descricao, altura, peso, categoria, genero_id, total, hp, ataque, defesa, especial_ataque, especial_defesa, velocidade
     } = req.body
 
-    if (!nome || !descricao || !altura || !peso || !categoria_id || !genero_id || !total || !hp || !ataque || !defesa || !especial_ataque || !especial_defesa || !velocidade) {
+    if (!nome || !descricao || !altura || !peso || !categoria || !genero_id || !total || !hp || !ataque || !defesa || !especial_ataque || !especial_defesa || !velocidade) {
             res.status(200).json({Mensagem: 'Há campo(s) vazio(s).', status: 400})
     } else {
-
         try {
+            const flagCategoria = false
             const verificaCategoria = await pool.query("Select categoria from categorias")
-            console.log(verificaCategoria)
-            if (verificaCategoria === categoria_id) {
-
-                
-
-             } else {
-
-                const insereCategoria = await pool.query("Insert into categorias Values($1)," [categoria_id])
-                const verificaGenero = await pool.query("Select tipo from tipos")
-                
-             } if (verificaGenero === genero_id) {
-                 return res.status(200).json({Mensagem: "Tipo já cadastrada."})
-             } else {
-                 const insereGenero = await pool.query("Insert into generos Values($1)," [genero_id])
-
+            const rowsCategoria = verificaCategoria.rows
+            rowsCategoria.map((item, index) => {
+                if (item.categoria === categoria) {
+                    flagCategoria = true
+                    categoria = item.categoria_id
+                    console.log(categoria)
+                }
+            })  
+            const flagGenero = false
+            const verificaGenero = await pool.query("Select genero from generos")
+            const rowsGenero = verificaGenero.rows
+            rowsGenero.map((item, index) => {
+                if (item.genero === genero_id) {
+                    flagGenero = true
+                }
+            })  
+            
+            if (flagCategoria === false) {
+                const cadastroCategoria = await pool.query(`INSERT INTO categoria(categoria) VALUES ('${categoria}');`)  
             }  
-
             
 
-
-            const CadastroPokemon = await pool.query(`INSERT INTO public.pokemon_info(nome, descricao, altura, peso, categoria_id, genero_id, total, hp, ataque, defesa, especial_ataque, especial_defesa, velocidade) VALUES ('${nome}', '${descricao}', ${altura}, ${peso}, ${categoria_id}, ${genero_id}, ${total}, ${hp}, ${ataque}, ${defesa}, ${especial_ataque}, ${especial_defesa}, ${velocidade});`)
+            const CadastroPokemon = await pool.query(`INSERT INTO pokemon_info(pokemon_info_id, nome, descricao, altura, peso, categoria_id, genero_id, total, hp, ataque, defesa, especial_ataque, especial_defesa, velocidade) VALUES ('${pokemon_info_id}, ${nome}', '${descricao}', ${altura}, ${peso}, ${categoria_id}, ${genero_id}, ${total}, ${hp}, ${ataque}, ${defesa}, ${especial_ataque}, ${especial_defesa}, ${velocidade});`)
             res.status(200).json({CadastroPokemon,
                     Mensagem: "Pokemon cadastrado com sucesso."})
         }
-            catch (erro) {
-                return res.status(500).json({Mensagem:"Erro ao cadastrar pokemon.", erro})
-                
-            }
+        
+        catch (erro) {
+            return res.status(500).json({Mensagem:"Erro ao cadastrar pokemon.", erro})
+    }
     } 
     }
 
