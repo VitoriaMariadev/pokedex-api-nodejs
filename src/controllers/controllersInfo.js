@@ -3,6 +3,7 @@ import pool from "../database/db.js"
 const MostrarTodosControllers = async (req, res) => {
     try {
         const Pokemons = await pool.query("SELECT * FROM pokemon_info")
+        
 
         if (Pokemons.length === 0) {
             res.status(200).json({Mensagem: "Não há pokemons cadastrados."})
@@ -38,18 +39,28 @@ const CadastrarPokemonControllers = async (req, res) => {
     if (!nome || !descricao || !altura || !peso || !categoria_id || !genero_id || !total || !hp || !ataque || !defesa || !especial_ataque || !especial_defesa || !velocidade) {
             res.status(200).json({Mensagem: 'Há campo(s) vazio(s).', status: 400})
     } else {
-        console.log('não tá vazio')
+
         try {
-            // const verificaCategoria = await pool.query("Select categorias from categoria")
-            // if (verificaCategoria === categoria_id) {
-            //     return res.status(200).json({Mensagem: "Categoria já cadastrada."})
-            // } else {
-            //     const insereCategoria = await pool.query("Insert into categorias Values($1)," [categoria_id])
-            // } if (verificaTipo === tipo) {
-            //     return res.status(200).json({Mensagem: "Tipo já cadastrada."})
-            // } else {
-            //     const insereGenero = await pool.query("Insert into generos Values($1)," [genero_id])
-            // }  
+            const verificaCategoria = await pool.query("Select categoria from categorias")
+            console.log(verificaCategoria)
+            if (verificaCategoria === categoria_id) {
+
+                
+
+             } else {
+
+                const insereCategoria = await pool.query("Insert into categorias Values($1)," [categoria_id])
+                const verificaGenero = await pool.query("Select tipo from tipos")
+                
+             } if (verificaGenero === genero_id) {
+                 return res.status(200).json({Mensagem: "Tipo já cadastrada."})
+             } else {
+                 const insereGenero = await pool.query("Insert into generos Values($1)," [genero_id])
+
+            }  
+
+            
+
 
             const CadastroPokemon = await pool.query(`INSERT INTO public.pokemon_info(nome, descricao, altura, peso, categoria_id, genero_id, total, hp, ataque, defesa, especial_ataque, especial_defesa, velocidade) VALUES ('${nome}', '${descricao}', ${altura}, ${peso}, ${categoria_id}, ${genero_id}, ${total}, ${hp}, ${ataque}, ${defesa}, ${especial_ataque}, ${especial_defesa}, ${velocidade});`)
             res.status(200).json({CadastroPokemon,
