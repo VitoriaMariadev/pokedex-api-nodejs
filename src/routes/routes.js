@@ -4,7 +4,7 @@ import { MostrarTodosControllers, CadastrarPokemonControllers, MostrarPeloID } f
 const route = Router()
 
 
-route.post("/mostrar", MostrarTodosControllers)
+route.get("/mostrar", MostrarTodosControllers)
 route.post("/cadastrar", CadastrarPokemonControllers)
 route.get("/mostrar/:id", MostrarPeloID)
 
