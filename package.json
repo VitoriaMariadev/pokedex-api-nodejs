@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/AndersonLucasdev/pokedex-api-postgres#readme",
   "dependencies": {
+    "@vercel/postgres": "^0.3.2",
     "body-parser": "^1.20.2",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
