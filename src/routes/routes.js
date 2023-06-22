@@ -5,8 +5,8 @@ const route = Router()
 
 
 route.post("/mostrar", MostrarTodosControllers)
-route.post("/cadastro", CadastrarPokemonControllers)
-route.get("/:id", MostrarPeloID)
+route.post("/cadastrar", CadastrarPokemonControllers)
+route.get("/mostrar/:id", MostrarPeloID)
 
 
 export default route
