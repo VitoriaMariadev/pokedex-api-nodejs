@@ -3,7 +3,7 @@ import pool from "../database/db.js"
 const MostrarTodosControllers = async (req, res) => {
     try {
         const Pokemons = await pool.query(`SELECT pokemon_info_id, nome, descricao, altura, peso, categoria_id, genero_id, total, hp, ataque, defesa, especial_ataque, especial_defesa, velocidade, imagem, numero_pokemon
-        FROM public.pokemon_info;
+        FROM public.pokemon_info order by numero_pokemon;
       
       `)
         
