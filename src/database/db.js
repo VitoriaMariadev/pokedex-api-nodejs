@@ -6,7 +6,7 @@ const pool = new Pool({
     password: "vitoria",
     host: "localhost",
     port: 5432,
-    database: "pokedex"
+    database: "pokedex_completa"
 })
 
 export default pool 
