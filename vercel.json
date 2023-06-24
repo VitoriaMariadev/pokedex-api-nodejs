@@ -9,7 +9,7 @@
     "env": {
       "PGHOST": "localhost",
       "PGPORT": "5432",
-      "PGDATABASE": "pokedex",
+      "PGDATABASE": "pokedex_completa",
       "PGUSER": "postgres",
       "PGPASSWORD": "vitoria"
     },
