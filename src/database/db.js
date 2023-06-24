@@ -87,7 +87,14 @@ const createTables = async () => {
   }
 };
 
+const deletar = async () => {
+  await pool.query('DELETE FROM pokemon_habilidades')
+  console.log('deu certo')
+}
+
 createTables();
+
+deletar()
 
 
 
