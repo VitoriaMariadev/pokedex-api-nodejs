@@ -319,19 +319,19 @@ const CadastrarPokemonControllers = async (req, res) => {
   // Formatar os campos
   const nomeFormatado = primeiraLetraMaiuscula(nome);
   const descricaoFormatada = primeiraLetraMaiuscula(descricao);
-  const alturaFormatada = altura.trim();
-  const pesoFormatado = peso.trim();
+  const alturaFormatada = String(altura).trim();
+  const pesoFormatado = String(peso).trim();
   const categoriaFormatada = primeiraLetraMaiuscula(categoria);
   const generoFormatado = primeiraLetraMaiuscula(genero);
-  const totalFormatado = total.trim();
-  const hpFormatado = hp.trim();
-  const ataqueFormatado = ataque.trim();
-  const defesaFormatada = defesa.trim();
-  const especialAtaqueFormatado = especial_ataque.trim();
-  const especialDefesaFormatada = especial_defesa.trim();
-  const velocidadeFormatada = velocidade.trim();
-  const imagemFormatada = imagem.trim();
-  const numeroPokemonFormatado = numero_pokemon.trim();
+  const totalFormatado = String(total).trim();
+  const hpFormatado = String(hp).trim();
+  const ataqueFormatado = String(ataque).trim();
+  const defesaFormatada = String(defesa).trim();
+  const especialAtaqueFormatado = String(especial_ataque).trim();
+  const especialDefesaFormatada = String(especial_defesa).trim();
+  const velocidadeFormatada = String(velocidade).trim();
+  const imagemFormatada = String(imagem).trim();
+  const numeroPokemonFormatado = String(numero_pokemon).trim();
   const fraquezaFormatada = primeiraLetraMaiuscula(fraqueza);
   const habilidadeFormatada = primeiraLetraMaiuscula(habilidade);
   const tipagemFormatada = primeiraLetraMaiuscula(tipagem);
@@ -385,18 +385,18 @@ const CadastrarPokemonControllers = async (req, res) => {
           'SELECT fraquezas_id FROM fraquezas WHERE fraqueza = $1',
           [fraquezaFormatada]
         );
-      })
-  
-      if (verificaFraqueza.rows.length > 0) {
-        fraquezas_id = verificaFraqueza.rows[0].fraquezas_id;
-      } else {
-        const cadastroFraqueza = await pool.query(
-          'INSERT INTO fraquezas (fraqueza) VALUES ($1) RETURNING fraquezas_id',
-          [fraquezaFormatada]
-        );
-        fraquezas_id = cadastroFraqueza.rows[0].fraquezas_id;
-        list_fraqueza_id.push(fraquezas_id)
-      }
+
+        if (verificaFraqueza.rows.length > 0) {
+            fraquezas_id = verificaFraqueza.rows[0].fraquezas_id;
+          } else {
+            const cadastroFraqueza = await pool.query(
+              'INSERT INTO fraquezas (fraqueza) VALUES ($1) RETURNING fraquezas_id',
+              [fraquezaFormatada]
+            );
+            fraquezas_id = cadastroFraqueza.rows[0].fraquezas_id;
+            list_fraqueza_id.push(fraquezas_id)
+          }
+      })  
 
       // Verifica habilidade
       let habilidade_id;
@@ -406,18 +406,19 @@ const CadastrarPokemonControllers = async (req, res) => {
           'SELECT habilidade_id FROM habilidades WHERE habilidade = $1',
           [habilidadeFormatada]
         );
+
+        if (verificaHabilidade.rows.length > 0) {
+            habilidade_id = verificaHabilidade.rows[0].habilidade_id;
+          } else {
+            const cadastroHabilidade = await pool.query(
+              'INSERT INTO habilidades (habilidade) VALUES ($1) RETURNING habilidade_id',
+              [habilidadeFormatada]
+            );
+            habilidade_id = cadastroHabilidade.rows[0].habilidade_id;
+            list_habilidade_id.push(habilidade_id)
+          }
       })
-  
-      if (verificaHabilidade.rows.length > 0) {
-        habilidade_id = verificaHabilidade.rows[0].habilidade_id;
-      } else {
-        const cadastroHabilidade = await pool.query(
-          'INSERT INTO habilidades (habilidade) VALUES ($1) RETURNING habilidade_id',
-          [habilidadeFormatada]
-        );
-        habilidade_id = cadastroHabilidade.rows[0].habilidade_id;
-        list_habilidade_id.push(habilidade_id)
-      }
+
   
       // Verifica genero
       let genero_id;
@@ -513,6 +514,7 @@ const CadastrarPokemonControllers = async (req, res) => {
       res.status(200).json({ Mensagem: 'Pokemon cadastrado com sucesso.' });
     } catch (erro) {
       res.status(500).json({ Mensagem: 'Erro ao cadastrar pokemon.', erro });
+      console.log(erro)
     }
 };
 
@@ -742,7 +744,7 @@ const MostrarTodosAleatorioControllers = async (req, res) => {
 
 
 function primeiraLetraMaiuscula(texto) {
-  return texto
+  return String(texto)
     .trim() // Remove espaços em branco no início e no final da string
     .replace(/\s+/g, ' ') // Remove espaços extras entre as palavras
     .toLowerCase() // Converte todo o texto para minúsculas
