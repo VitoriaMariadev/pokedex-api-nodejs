@@ -16,7 +16,10 @@ const port = 3000
 // app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 //   extended: true
 // })); 
-app.use(cors())
+app.use(cors({
+    origin: 'http://localhost:3000', // Coloque o endereço do seu aplicativo aqui
+    // Outras opções de configuração...
+  }));
 
 app.use(express.json())
 app.use("/", Route)
