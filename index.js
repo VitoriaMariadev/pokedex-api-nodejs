@@ -1,30 +1,18 @@
-import express from 'express'
-// import bodyParser from 'body-parser'
-// import cookieParser from 'cookie-parser'
-import cors from 'cors'
-// import dotenv from "dotenv"
-import Route from "./src/routes/routes.js"
+import express from 'express';
+import cors from 'cors';
+import Route from './src/routes/routes.js';
 
-// dotenv.config()
+const app = express();
+const port = 3000;
 
-
-const app = express()
-const port = 3000
-
-
-// app.use(bodyParser.json() );       // to support JSON-encoded bodies
-// app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
-//   extended: true
-// })); 
 app.use(cors({
-    origin: '*', // Coloque o endereço do seu aplicativo aqui
-    // Outras opções de configuração...
-  }));
+  origin: '*', // Coloque o endereço do seu aplicativo aqui
+  // Outras opções de configuração...
+}));
 
-app.use(express.json())
-app.use("/", Route)
-
+app.use(express.json());
+app.use('/', Route);
 
 app.listen(port, () => {
-    console.log(`Servidor rodando na porta ${port}`)
-})
+  console.log(`Servidor rodando na porta ${port}`);
+});
