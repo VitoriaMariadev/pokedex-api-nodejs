@@ -188,8 +188,6 @@ const MostrarTodosPokemonsTipagem = async (req, res) => {
 
 const MostrarPokemonPeloNome = async (req, res) => {
   const { nome } = req.body;
-  const nomeFormatado = primeiraLetraMaiuscula(nome);
-  console.log(nomeFormatado);
 
   try {
     const pokemon = await pool.query(`
@@ -213,7 +211,7 @@ const MostrarPokemonPeloNome = async (req, res) => {
     FROM
       public.pokemon_info
     WHERE
-      nome ILIKE '%' || '${nomeFormatado}' || '%'
+      nome ILIKE '%' || '${nome}' || '%'
     ORDER BY
       numero_pokemon;
 
