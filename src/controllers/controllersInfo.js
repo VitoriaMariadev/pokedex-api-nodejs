@@ -104,7 +104,7 @@ const MostrarTodosTipagem = async (req, res) => {
 
 const MostrarPokemonPeloID = async (req, res) => {
     try {
-        const pokemon = await pool.query(`SELECT
+      const pokemon = await pool.query(`SELECT
         p.pokemon_info_id,
         p.nome,
         p.descricao,
@@ -136,6 +136,7 @@ const MostrarPokemonPeloID = async (req, res) => {
         INNER JOIN tipagem t ON pt.tipagem_id = t.tipagem_id
     WHERE
         p.pokemon_info_id = ${req.params.id};`)
+        
         res.status(200).json(pokemon.rows[0])
     }
 
@@ -361,9 +362,6 @@ const CadastrarPokemonControllers = async (req, res) => {
   const velocidadeFormatada = String(velocidade).trim();
   const imagemFormatada = imagem.trim();
   const numeroPokemonFormatado = String(numero_pokemon).trim();
-  const fraquezaFormatada = primeiraLetraMaiuscula(fraqueza);
-  const habilidadeFormatada = primeiraLetraMaiuscula(habilidade);
-  const tipagemFormatada = primeiraLetraMaiuscula(tipagem);
 
   try {
     if (
@@ -380,8 +378,8 @@ const CadastrarPokemonControllers = async (req, res) => {
       !especialAtaqueFormatado ||
       !especialDefesaFormatada ||
       !velocidadeFormatada ||
-      !fraquezaFormatada ||
-      !habilidadeFormatada ||
+      !fraqueza ||
+      !habilidade ||
       !tipagemFormatada ||
       !imagemFormatada ||
       !numeroPokemonFormatado
@@ -410,6 +408,7 @@ const CadastrarPokemonControllers = async (req, res) => {
       let fraquezas_id;
       const list_fraqueza_id = []
       fraqueza.map(async(fraqueza_nome) => {
+        const fraquezaFormatada = primeiraLetraMaiuscula(fraqueza_nome);
         const verificaFraqueza = await pool.query(
           'SELECT fraquezas_id FROM fraquezas WHERE fraqueza = $1',
           [fraquezaFormatada]
@@ -431,6 +430,7 @@ const CadastrarPokemonControllers = async (req, res) => {
       let habilidade_id;
       const list_habilidade_id = []
       habilidade.map(async(habilidade_nome) => {
+        const habilidadeFormatada = primeiraLetraMaiuscula(habilidade_nome);
         const verificaHabilidade = await pool.query(
           'SELECT habilidade_id FROM habilidades WHERE habilidade = $1',
           [habilidadeFormatada]
@@ -525,20 +525,24 @@ const CadastrarPokemonControllers = async (req, res) => {
       const pokemon_info_id = CadastroPokemon.rows[0].pokemon_info_id;
   
       // Relacionando as tabelas
+
+      list_fraqueza_id.map(async(fraquezas_id) => {
       await pool.query(
         'INSERT INTO pokemon_fraquezas (pokemon_info_id, fraquezas_id) VALUES ($1, $2)',
         [pokemon_info_id, fraquezas_id]
-      );
-  
+      )});
+        
+      list_habilidade_id.map(async(habilidade_id) => {
       await pool.query(
         'INSERT INTO pokemon_habilidades (pokemon_info_id, habilidade_id) VALUES ($1, $2)',
         [pokemon_info_id, habilidade_id]
-      );
+      )});
   
+      list_tipagem_id.map(async(tipagem_id) => {
       await pool.query(
         'INSERT INTO pokemon_tipagem (pokemon_info_id, tipagem_id) VALUES ($1, $2)',
         [pokemon_info_id, tipagem_id]
-      );
+      )});
   
       res.status(200).json({ Mensagem: 'Pokemon cadastrado com sucesso.' });
     } catch (erro) {
