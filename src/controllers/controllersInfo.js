@@ -192,40 +192,41 @@ const MostrarPokemonPeloNome = async (req, res) => {
   try {
     const pokemon = await pool.query(`
       SELECT
-      pokemon_info_id,
-      nome,
-      descricao,
-      altura,
-      peso,
-      categoria_id,
-      genero_id,
-      total,
-      hp,
-      ataque,
-      defesa,
-      especial_ataque,
-      especial_defesa,
-      velocidade,
-      imagem,
-      numero_pokemon
-    FROM
-      public.pokemon_info
-    WHERE
-      nome ILIKE '%' || '${nome}' || '%'
-    ORDER BY
-      numero_pokemon;
-
-  `);
-
-    res.status(200).json(pokemon.rows);
+        pokemon_info_id,
+        nome,
+        descricao,
+        altura,
+        peso,
+        categoria_id,
+        genero_id,
+        total,
+        hp,
+        ataque,
+        defesa,
+        especial_ataque,
+        especial_defesa,
+        velocidade,
+        imagem,
+        numero_pokemon
+      FROM
+        public.pokemon_info
+      WHERE
+        nome ILIKE '%' || '${nome}' || '%'
+      ORDER BY
+        numero_pokemon;
+    `);
 
     if (pokemon.rows.length === 0) {
-      return res.status(200).json({Mensagem: 'Pokemon(s) não encontrado(s)', status: 400 });
+      return res.status(400).json({ mensagem: 'Pokemon(s) não encontrado(s)' });
     }
+
+    return res.status(200).json(pokemon.rows);
   } catch (error) {
-    return res.status(500).json({Mensagem: error.Mensagem });
+    console.error('Erro ao buscar Pokémon por nome:', error);
+    return res.status(500).json({ mensagem: 'Ocorreu um erro interno no servidor' });
   }
 }
+
 
 // função de cadastrar pokemon
 const CadastrarCategoria = async (req, res) => {
