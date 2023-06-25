@@ -17,7 +17,7 @@ const port = 3000
 //   extended: true
 // })); 
 app.use(cors({
-    origin: 'http://localhost:3000', // Coloque o endereço do seu aplicativo aqui
+    origin: '*', // Coloque o endereço do seu aplicativo aqui
     // Outras opções de configuração...
   }));
 
