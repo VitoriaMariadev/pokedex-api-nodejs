@@ -193,10 +193,30 @@ const MostrarPokemonPeloNome = async (req, res) => {
 
   try {
     const pokemon = await pool.query(`
-    SELECT pokemon_info_id, nome, descricao, altura, peso, categoria_id, genero_id, total, hp, ataque, defesa, especial_ataque, especial_defesa, velocidade, imagem, numero_pokemon
-    FROM public.pokemon_info 
-    WHERE nome LIKE '%' || '${nomeFormatado}' || '%' 
-    ORDER BY numero_pokemon;
+      SELECT
+      pokemon_info_id,
+      nome,
+      descricao,
+      altura,
+      peso,
+      categoria_id,
+      genero_id,
+      total,
+      hp,
+      ataque,
+      defesa,
+      especial_ataque,
+      especial_defesa,
+      velocidade,
+      imagem,
+      numero_pokemon
+    FROM
+      public.pokemon_info
+    WHERE
+      nome ILIKE '%' || '${nomeFormatado}' || '%'
+    ORDER BY
+      numero_pokemon;
+
   `);
 
     res.status(200).json(pokemon.rows);
