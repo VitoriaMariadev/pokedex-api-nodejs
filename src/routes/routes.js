@@ -3,7 +3,7 @@ import {MostrarTodosPokemonsControllers, MostrarTodasCategorias, MostrarTodasFra
     MostrarTodosGeneros, MostrarTodosTipagem, MostrarTodasHabilidades, MostrarPokemonPeloID,
     CadastrarPokemonControllers, CadastrarCategoria, CadastrarFraqueza, CadastrarTipagem,
     CadastrarHabilidade, ExcluirPokemonControllers, ExcluirCategoria, ExcluirFraqueza, ExcluirTipagem, 
-    ExcluirHabilidade, MostrarTodosAleatorioControllers, primeiraLetraMaiuscula} from "../controllers/controllersInfo.js"
+    ExcluirHabilidade, MostrarTodosAleatorioControllers, primeiraLetraMaiuscula, MostrarPokemonPeloNome} from "../controllers/controllersInfo.js"
 
 const route = Router()
 
@@ -14,6 +14,7 @@ route.get("/mostrar/fraquezas", MostrarTodasFraquezas)
 route.get("/mostrar/generos", MostrarTodosGeneros)
 route.get("/mostrar/tipagem", MostrarTodosTipagem)
 route.get("/mostrar/habilidades", MostrarTodasHabilidades)
+route.get("/mostrar/nome", MostrarPokemonPeloNome)
 
 
 // rotas cadastrar

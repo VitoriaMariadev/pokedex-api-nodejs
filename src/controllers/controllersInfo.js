@@ -186,6 +186,28 @@ const MostrarTodosPokemonsTipagem = async (req, res) => {
   }
 }
 
+const MostrarPokemonPeloNome = async (req, res) => {
+  const { nome } = req.body;
+  const nomeFormatado = primeiraLetraMaiuscula(nome);
+  console.log(nomeFormatado);
+
+  try {
+    const pokemon = await pool.query(`
+    SELECT pokemon_info_id, nome, descricao, altura, peso, categoria_id, genero_id, total, hp, ataque, defesa, especial_ataque, especial_defesa, velocidade, imagem, numero_pokemon
+    FROM public.pokemon_info 
+    WHERE nome LIKE '%' || '${nomeFormatado}' || '%' 
+    ORDER BY numero_pokemon;
+  `);
+
+    res.status(200).json(pokemon.rows);
+
+    if (pokemon.rows.length === 0) {
+      return res.status(200).json({Mensagem: 'Pokemon(s) não encontrado(s)', status: 400 });
+    }
+  } catch (error) {
+    return res.status(500).json({Mensagem: error.Mensagem });
+  }
+}
 
 // função de cadastrar pokemon
 const CadastrarCategoria = async (req, res) => {
@@ -790,7 +812,7 @@ function primeiraLetraMaiuscula(texto) {
 
 export {
     MostrarTodosPokemonsControllers, MostrarTodasCategorias, MostrarTodasFraquezas,
-    MostrarTodosGeneros, MostrarTodosTipagem, MostrarTodasHabilidades, MostrarPokemonPeloID,
+    MostrarTodosGeneros, MostrarPokemonPeloNome, MostrarTodosTipagem, MostrarTodasHabilidades, MostrarPokemonPeloID,
     CadastrarPokemonControllers, CadastrarCategoria, CadastrarFraqueza, CadastrarTipagem, CadastrarHabilidade,
     ExcluirPokemonControllers, ExcluirCategoria, ExcluirFraqueza, ExcluirTipagem, ExcluirHabilidade, 
     MostrarTodosAleatorioControllers, primeiraLetraMaiuscula
