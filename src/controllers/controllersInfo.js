@@ -447,7 +447,7 @@ const CadastrarPokemonControllers = async (req, res) => {
   
       // Verifica fraqueza
       let fraquezas_id;
-      const list_fraqueza_id = []
+      let list_fraqueza_id = []
       fraqueza.map(async(fraqueza_nome) => {
         const fraquezaFormatada = primeiraLetraMaiuscula(fraqueza_nome);
         const verificaFraqueza = await pool.query(
@@ -463,13 +463,14 @@ const CadastrarPokemonControllers = async (req, res) => {
               [fraquezaFormatada]
             );
             fraquezas_id = cadastroFraqueza.rows[0].fraquezas_id;
-            list_fraqueza_id.push(fraquezas_id)
+            
           }
+        list_fraqueza_id.push(fraquezas_id)
       })  
 
       // Verifica habilidade
       let habilidade_id;
-      const list_habilidade_id = []
+      let list_habilidade_id = []
       habilidade.map(async(habilidade_nome) => {
         const habilidadeFormatada = primeiraLetraMaiuscula(habilidade_nome);
         const verificaHabilidade = await pool.query(
@@ -485,8 +486,9 @@ const CadastrarPokemonControllers = async (req, res) => {
               [habilidadeFormatada]
             );
             habilidade_id = cadastroHabilidade.rows[0].habilidade_id;
-            list_habilidade_id.push(habilidade_id)
+            
           }
+        list_habilidade_id.push(habilidade_id)
       })
 
   
@@ -505,7 +507,7 @@ const CadastrarPokemonControllers = async (req, res) => {
   
       // Verifica tipagem
       let tipagem_id;
-      const list_tipagem_id = []
+      let list_tipagem_id = []
       tipagem.map( async (tipagem_nome) => {
         console.log(tipagem_nome)
         const verificaTipagem = await pool.query(
@@ -521,8 +523,9 @@ const CadastrarPokemonControllers = async (req, res) => {
             [tipagem_nome]
           );
           tipagem_id = cadastroTipagem.rows[0].tipagem_id;
-          list_tipagem_id.push(tipagem_id)
+          
         }
+        list_tipagem_id.push(tipagem_id)
       })
 
       // Inserindo nas tabelas
