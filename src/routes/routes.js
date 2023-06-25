@@ -14,7 +14,7 @@ route.get("/mostrar/fraquezas", MostrarTodasFraquezas)
 route.get("/mostrar/generos", MostrarTodosGeneros)
 route.get("/mostrar/tipagem", MostrarTodosTipagem)
 route.get("/mostrar/habilidades", MostrarTodasHabilidades)
-route.get("/mostrar/nome", MostrarPokemonPeloNome)
+route.post("/mostrar/nome", MostrarPokemonPeloNome)
 
 
 // rotas cadastrar
