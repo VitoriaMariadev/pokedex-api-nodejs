@@ -465,17 +465,19 @@ const CadastrarPokemonControllers = async (req, res) => {
             fraquezas_id = cadastroFraqueza.rows[0].fraquezas_id;
             
           }
-        list_fraqueza_id.push(fraquezas_id)
-      })  
+          list_fraqueza_id.push(fraquezas_id)
+        
+      }) 
+      
+      
 
       // Verifica habilidade
       let habilidade_id;
       let list_habilidade_id = []
       habilidade.map(async(habilidade_nome) => {
-        const habilidadeFormatada = primeiraLetraMaiuscula(habilidade_nome);
         const verificaHabilidade = await pool.query(
           'SELECT habilidade_id FROM habilidades WHERE habilidade = $1',
-          [habilidadeFormatada]
+          [(habilidade_nome)]
         );
 
         if (verificaHabilidade.rows.length > 0) {
@@ -483,14 +485,15 @@ const CadastrarPokemonControllers = async (req, res) => {
           } else {
             const cadastroHabilidade = await pool.query(
               'INSERT INTO habilidades (habilidade) VALUES ($1) RETURNING habilidade_id',
-              [habilidadeFormatada]
+              [habilidade_nome]
             );
             habilidade_id = cadastroHabilidade.rows[0].habilidade_id;
             
           }
-        list_habilidade_id.push(habilidade_id)
+          list_habilidade_id.push(habilidade_id)
+        
       })
-
+      
   
       // Verifica genero
       let genero_id;
@@ -526,8 +529,9 @@ const CadastrarPokemonControllers = async (req, res) => {
           
         }
         list_tipagem_id.push(tipagem_id)
+        
       })
-
+      
       // Inserindo nas tabelas
       const CadastroPokemon = await pool.query(
         `INSERT INTO pokemon_info (
@@ -574,19 +578,29 @@ const CadastrarPokemonControllers = async (req, res) => {
       await pool.query(
         'INSERT INTO pokemon_fraquezas (pokemon_info_id, fraquezas_id) VALUES ($1, $2)',
         [pokemon_info_id, fraquezas_id]
-      )});
-        
+      )
+      console.log('fraqueza')
+        console.log(fraquezas_id)
+    });
+  
+      console.log(list_habilidade_id)
       list_habilidade_id.map(async(habilidade_id) => {
       await pool.query(
         'INSERT INTO pokemon_habilidades (pokemon_info_id, habilidade_id) VALUES ($1, $2)',
         [pokemon_info_id, habilidade_id]
-      )});
+      )
+        console.log('habili')
+        console.log(habilidade_id)
+    });
   
       list_tipagem_id.map(async(tipagem_id) => {
       await pool.query(
         'INSERT INTO pokemon_tipagem (pokemon_info_id, tipagem_id) VALUES ($1, $2)',
         [pokemon_info_id, tipagem_id]
-      )});
+      )
+      console.log('tipo')
+        console.log(tipagem_id)
+    });
   
       res.status(200).json({ Mensagem: 'Pokemon cadastrado com sucesso.' });
     } catch (erro) {
