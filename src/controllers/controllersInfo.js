@@ -421,7 +421,7 @@ const CadastrarPokemonControllers = async (req, res) => {
       !velocidadeFormatada ||
       !fraqueza ||
       !habilidade ||
-      !tipagemFormatada ||
+      !tipagem ||
       !imagemFormatada ||
       !numeroPokemonFormatado
     ) {
