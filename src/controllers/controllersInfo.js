@@ -446,7 +446,7 @@ const CadastrarPokemonControllers = async (req, res) => {
       !imagemFormatada ||
       !numeroPokemonFormatado
     ) {
-        return res.status(400).json({ Mensagem: 'Há campo(s) vazio(s).', status: 400 });
+        return res.status(200).json({ Mensagem: 'Há campo(s) vazio(s).', status: 400 });
       }
       // let total = (parseFloat(ataque) + parseFloat(defesa) + parseFloat(hp) + parseFloat(especialAtaqueFormatado) + parseFloat(especialDefesaFormatada) + parseFloat(velocidade)) / 6
       let total = 1
