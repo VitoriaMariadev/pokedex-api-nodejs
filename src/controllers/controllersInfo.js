@@ -702,16 +702,17 @@ const CadastrarPokemonControllers = async (req, res) => {
     ) {
         return res.status(200).json({ Mensagem: 'Há campo(s) vazio(s).', status: 400 });
       }
-      let total = (parseFloat(ataque) + parseFloat(defesa) + parseFloat(hp) + parseFloat(especialAtaqueFormatado) + parseFloat(especialDefesaFormatada) + parseFloat(velocidade)) / 6
-
+      let total = (parseInt(ataque) + parseInt(defesa) + parseInt(hp) + parseInt(especialAtaqueFormatado) + parseInt(especialDefesaFormatada) + parseInt(velocidade))
 
     // Verifica categoria
     let categoria_id;
+    console.log('aqui')
     const verificaCategoria = await pool.query(
       'SELECT categoria_id FROM categorias WHERE categoria = $1',
       [categoriaFormatada]
     );
     categoria_id = verificaCategoria.rows[0].categoria_id;
+    console.log('categoria', categoria_id)
     
 
     // Verifica fraqueza
@@ -727,6 +728,7 @@ const CadastrarPokemonControllers = async (req, res) => {
       );
     fraquezas_id = verificaFraqueza.rows[0].fraquezas_id;
     list_fraqueza_id.push(fraquezas_id);  
+    console.log(list_fraqueza_id)
     }
 
     // Verifica habilidade
@@ -742,6 +744,7 @@ const CadastrarPokemonControllers = async (req, res) => {
       );
     habilidade_id = verificaHabilidade.rows[0].habilidade_id;
     list_habilidade_id.push(habilidade_id);
+    console.log(list_habilidade_id)
     }
 
     // Verifica genero
@@ -769,6 +772,7 @@ const CadastrarPokemonControllers = async (req, res) => {
       );
       tipagem_id = verificaTipagem.rows[0].tipagem_id;
       list_tipagem_id.push(tipagem_id);
+      console.log(list_tipagem_id)
     }
 
     const verificaNumeroPokemon = await pool.query(
@@ -823,6 +827,7 @@ const CadastrarPokemonControllers = async (req, res) => {
       // Relacionando as tabelas
 
       for (const fraqueza_id of list_fraqueza_id) {
+        console.log('fraqueza', fraqueza_id)
         await pool.query(
           'INSERT INTO pokemon_fraquezas (pokemon_info_id, fraquezas_id) VALUES ($1, $2)',
           [pokemon_info_id, fraqueza_id]
@@ -830,6 +835,7 @@ const CadastrarPokemonControllers = async (req, res) => {
       }
 
       for (const habilidade_id of list_habilidade_id) {
+        console.log('habilidade', habilidade_id)
         await pool.query(
           'INSERT INTO pokemon_habilidades (pokemon_info_id, habilidade_id) VALUES ($1, $2)',
           [pokemon_info_id, habilidade_id]
@@ -837,6 +843,7 @@ const CadastrarPokemonControllers = async (req, res) => {
       }
 
       for (const tipagem_id of list_tipagem_id) {
+        console.log('Tipagem', tipagem_id)
         await pool.query(
           'INSERT INTO pokemon_tipagem (pokemon_info_id, tipagem_id) VALUES ($1, $2)',
           [pokemon_info_id, tipagem_id]
