@@ -371,7 +371,7 @@ const MostrarPokemonPeloNome = async (req, res) => {
     p.altura,
     p.peso,
     c.categoria,
-    string_agg(DISTINCT f.imagem_categoria, ', ') as img_categoria,
+    string_agg(DISTINCT c.imagem_categoria, ', ') as img_categoria,
     g.genero,
     p.total,
     p.hp,
@@ -387,7 +387,7 @@ const MostrarPokemonPeloNome = async (req, res) => {
     string_agg(DISTINCT h.habilidade, ', ') as habilidades,
     string_agg(DISTINCT h.imagem_habilidade, ', ') as img_habilidade,
     string_agg(DISTINCT t.tipo, ', ') as tipos,
-    string_agg(DISTINCT f.imagem_tipagem, ', ') as img_tipo
+    string_agg(DISTINCT t.imagem_tipagem, ', ') as img_tipo
 FROM
     pokemon_info p
     INNER JOIN categorias c ON p.categoria_id = c.categoria_id
