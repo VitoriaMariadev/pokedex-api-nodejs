@@ -1,12 +1,20 @@
 import { Router } from "express"
-import {MostrarTodosPokemonsControllers, MostrarTodosPokemonsAleatorio, MostrarTodasCategorias, MostrarTodasFraquezas,
+import {MostrarTodosPokemonsControllers, MostrarTodasCategorias, MostrarTodasFraquezas,
     MostrarTodosGeneros, MostrarPokemonPeloNome, MostrarTodosTipagem, MostrarTodasHabilidades, MostrarPokemonPeloID,
-    MostrarTodosPokemonsFraquezas, MostrarTodosPokemonsTipagem,
+    MostrarTodosPokemonsFraquezas, MostrarTodosPokemonsTipagem, MostrarTodosPokemonsAleatorio,
     CadastrarPokemonControllers, CadastrarCategoria, CadastrarFraqueza, CadastrarTipagem, CadastrarHabilidade,
-    ExcluirPokemonControllers, ExcluirCategoria, ExcluirFraqueza, ExcluirTipagem, ExcluirHabilidade} from "../controllers/controllersInfo.js"
+    ExcluirPokemonControllers, ExcluirCategoria, ExcluirFraqueza, ExcluirTipagem, ExcluirHabilidade, 
+
+    CadastrarGradeEvolutivaPokemon, MostrarGradeEvolutivaPokemon,
+    primeiraLetraMaiuscula, ExcluirGradeEvolutivaPokemon
+    } from "../controllers/controllersInfo.js"
+
+import { CadastrarUsuarioControllers, Login, validarToken, deletarToken, EncontrarUsuarioId, removeUsuarioID, EncontrarTodosUsuarios } from "../controllers/controllersUser.js"
+
 
 const route = Router()
 
+// pokemons
 // rotas mostrar
 route.get("/mostrar/pokemon", MostrarTodosPokemonsControllers)
 route.get("/mostrar/categoria", MostrarTodasCategorias)
@@ -35,5 +43,30 @@ route.delete("/excluir/tipagem", ExcluirTipagem)
 route.delete("/excluir/habilidade", ExcluirHabilidade)
 
 
+// usuarios
+// rotas mostrar
+route.get("/mostrar/usuario/:id", EncontrarUsuarioId)
+route.get("/mostrar_usuarios", EncontrarTodosUsuarios)
+
+// rotas cadastrar/logar
+route.post("/cadastro/usuario", CadastrarUsuarioControllers)
+route.post("/login", Login)
+
+// rotas token
+route.post("/validar/token", validarToken)
+
+// rotas excluir
+route.post("/deletar/token", deletarToken)
+route.delete("/excluir_usuario/:id", removeUsuarioID)
+
+// grade evolutiva
+// rotas mostrar
+route.post("/mostrar_grade/", MostrarGradeEvolutivaPokemon)
+
+// rotas cadastrar
+route.post("/cadastrar_grade", CadastrarGradeEvolutivaPokemon)
+
+// rotas excluir
+route.delete("/excluir_grade", ExcluirGradeEvolutivaPokemon)
 
 export default route
