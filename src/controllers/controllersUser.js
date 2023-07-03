@@ -73,8 +73,13 @@ const Login = async (req, res) => {
           const novaSenha = senha.trim();
           
           const verificaUsuario = await pool.query("SELECT * FROM usuarios WHERE nome = $1", [novoUsuario]);
-          const senhaValida = bcrypt.compareSync(novaSenha, verificaUsuario.rows[0].senha);
           
+          if (verificaUsuario.rows.length === 0) {
+            return res.status(200).json({ Mensagem: 'Usuário ou senha incorretos.', status: 400 });
+          }
+
+          const senhaValida = bcrypt.compareSync(novaSenha, verificaUsuario.rows[0].senha);
+
           if (!senhaValida) {
             return res.status(200).json({ Mensagem: 'Usuário ou senha incorretos.', status: 400 });
           }
