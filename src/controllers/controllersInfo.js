@@ -1023,35 +1023,41 @@ const ExcluirTipagem = async (req, res) => {
 
 const ExcluirPokemonControllers = async (req, res) => {
   try {
-    const {pokemon_info_id} = req.params
-    console.log(pokemon_info_id)
+    const { pokemon_info_id } = req.params;
+    console.log(pokemon_info_id);
 
     if (!pokemon_info_id) {
-        return res.status(200).json({Mensagem: 'Id não informado.', status:400})
+      return res
+        .status(400)
+        .json({ Mensagem: "Id não informado.", status: 400 });
     }
 
-    // excluido pokemon dos relacionamentos
     // excluindo relacionamento fraquezas
-    await pool.query(`DELETE FROM pokemon_fraquezas WHERE pokemon_info_id = ${pokemon_info_id}`)
+    await pool.query("DELETE FROM pokemon_fraquezas WHERE pokemon_info_id = $1", [
+      pokemon_info_id,
+    ]);
 
     // excluindo relacionamento habilidades
-    await pool.query(`DELETE FROM pokemon_habilidades WHERE pokemon_info_id = ${pokemon_info_id}`)
-    
+    await pool.query("DELETE FROM pokemon_habilidades WHERE pokemon_info_id = $1", [
+      pokemon_info_id,
+    ]);
+
     // excluindo relacionamento tipagem
-    await pool.query(`DELETE FROM pokemon_tipagem WHERE pokemon_info_id = ${pokemon_info_id}`)
-    
+    await pool.query("DELETE FROM pokemon_tipagem WHERE pokemon_info_id = $1", [
+      pokemon_info_id,
+    ]);
 
     // excluindo pokemon
-    await pool.query(`DELETE FROM pokemon_info WHERE pokemon_info_id = ${pokemon_info_id}`)
+    await pool.query("DELETE FROM pokemon_info WHERE pokemon_info_id = $1", [
+      pokemon_info_id,
+    ]);
 
+    return res.status(200).json({ Mensagem: "Pokemon excluída com sucesso." });
+  } catch (erro) {
+    return res.status(500).json({ Mensagem: erro.message });
+  }
+};
 
-    return res.status(200).json({Mensagem: "Pokemon excluida com sucesso."})
-}
-
-catch (erro){
-    return res.status(500).json({Mensagem: erro.Mensagem})
-}
-}
 
 
 // funções de edição
