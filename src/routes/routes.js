@@ -36,7 +36,7 @@ route.post("/cadastrar/tipagem", CadastrarTipagem)
 route.post("/cadastrar/habilidades", CadastrarHabilidade)
 
 // rotas excluir
-route.delete("/excluir/pokemon", ExcluirPokemonControllers)
+route.delete("/excluir/pokemon/:pokemon_info_id", ExcluirPokemonControllers)
 route.delete("/excluir/categoria", ExcluirCategoria)
 route.delete("/excluir/fraqueza", ExcluirFraqueza)
 route.delete("/excluir/tipagem", ExcluirTipagem)

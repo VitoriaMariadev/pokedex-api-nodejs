@@ -5,6 +5,7 @@ const { Pool } = pg;
 
 const pool = new Pool({
     connectionString: "postgres://default:P4IlabEsLA5S@ep-long-dew-098244.us-east-1.postgres.vercel-storage.com:5432/verceldb?sslmode=require"
+    
   });
   
   // Criação das tabelas e campos no banco de dados

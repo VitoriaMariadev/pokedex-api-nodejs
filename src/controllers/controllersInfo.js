@@ -1023,7 +1023,8 @@ const ExcluirTipagem = async (req, res) => {
 
 const ExcluirPokemonControllers = async (req, res) => {
   try {
-    const {pokemon_info_id} = req
+    const {pokemon_info_id} = req.params
+    console.log(pokemon_info_id)
 
     if (!pokemon_info_id) {
         return res.status(200).json({Mensagem: 'Id não informado.', status:400})
