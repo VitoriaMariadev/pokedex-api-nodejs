@@ -725,14 +725,16 @@ const CadastrarPokemonControllers = async (req, res) => {
         .json({ Mensagem: "Há campo(s) inválido(s) ou vazio(s).", status: 400 });
     }
     console.log("entrou!!")
-    let total =
+
+    const total =
       (ataqueFormatado +
         defesaFormatada +
         hpFormatado +
         especialAtaqueFormatado +
         especialDefesaFormatada +
-        velocidadeFormatada) /
-      6;
+        velocidadeFormatada) 
+
+    console.log(total)
 
     // Verifica categoria
     const verificaCategoria = await pool.query(
@@ -852,7 +854,7 @@ const CadastrarPokemonControllers = async (req, res) => {
         velocidadeFormatada,
         imagemFormatada,
         numeroPokemonFormatado,
-        estagioEvolucaoFormatado,
+        estagioEvolucaoFormatado
       ]
     );
       console.log(CadastroPokemon.rows)
