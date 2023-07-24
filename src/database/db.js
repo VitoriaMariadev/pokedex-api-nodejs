@@ -66,7 +66,7 @@ const pool = new Pool({
         especial_defesa INTEGER,
         velocidade INTEGER,
         imagem VARCHAR(255),
-        numero_pokemon VARCHAR,
+        numero_pokemon VARCHAR(255),
         estagio_evolucao INTEGER,
         FOREIGN KEY (categoria_id) REFERENCES categorias(categoria_id),
         FOREIGN KEY (genero_id) REFERENCES generos(genero_id)
