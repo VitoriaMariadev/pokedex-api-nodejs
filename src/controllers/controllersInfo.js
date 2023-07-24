@@ -600,7 +600,7 @@ const CadastrarHabilidade = async (req, res) => {
       habilidade_id = verificaHabilidade.rows[0].habilidade_id;
     } else {
       const cadastroHabilidade = await pool.query(
-        "INSERT INTO habilidades (habilidade, descricao_habilidade) VALUES ($1, $2)",
+        "INSERT INTO habilidades (habilidade, descricao) VALUES ($1, $2)",
         [nova_habilidade, nova_descricao]
       );
       
@@ -623,13 +623,12 @@ const CadastrarTipagem = async (req, res) => {
   try {
     if (!tipagem || !imagem_tipagem) {
       return res
-        .status(200)
+        .status(400)
         .json({ Mensagem: "Há campo(s) vazio(s).", status: 400 });
     }
 
     const nova_tipagem = primeiraLetraMaiuscula(tipagem);
     const nova_imagem_tipagem = imagem_tipagem.trim();
-    const nova_descricao = descricao.trim();
 
     let tipagem_id;
     const verificaTipagem = await pool.query(
@@ -650,13 +649,14 @@ const CadastrarTipagem = async (req, res) => {
 
     return res
       .status(200)
-      .json({ Mensagem: "Tipagem cadastrado com sucesso." });
+      .json({ Mensagem: "Tipagem cadastrada com sucesso." });
   } catch (erro) {
     return res
       .status(500)
       .json({ Mensagem: "Erro ao cadastrar tipagem.", erro });
   }
 };
+
 
 const CadastrarPokemonControllers = async (req, res) => {
   const {
