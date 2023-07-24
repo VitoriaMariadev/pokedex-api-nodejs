@@ -523,9 +523,10 @@ const CadastrarCategoria = async (req, res) => {
       categoria_id = verificaCategoria.rows[0].categoria_id;
     } else {
       const cadastroCategoria = await pool.query(
-        "INSERT INTO categorias (categoria) VALUES ($3)",
+        "INSERT INTO categorias (categoria) VALUES ($1)",
         [nova_categoria]
       );
+      
       categoria_id = cadastroCategoria.rows[0].categoria_id;
     }
     return res
@@ -561,7 +562,7 @@ const CadastrarFraqueza = async (req, res) => {
       fraquezas_id = verificaFraqueza.rows[0].fraquezas_id;
     } else {
       const cadastroFraqueza = await pool.query(
-        "INSERT INTO fraquezas (fraqueza, imagem_fraqueza) VALUES ($1, $2)",
+        "INSERT INTO fraquezas (fraqueza, imagem_fraqueza) VALUES ($1, $2) RETURNING fraquezas_id",
         [nova_fraqueza, nova_imagem_fraqueza]
       );
       fraquezas_id = cadastroFraqueza.rows[0].fraquezas_id;
@@ -599,9 +600,10 @@ const CadastrarHabilidade = async (req, res) => {
       habilidade_id = verificaHabilidade.rows[0].habilidade_id;
     } else {
       const cadastroHabilidade = await pool.query(
-        "INSERT INTO habilidades (habilidade, imagem_habilidade) VALUES ($1, $2)",
+        "INSERT INTO habilidades (habilidade, descricao_habilidade) VALUES ($1, $2)",
         [nova_habilidade, nova_descricao]
       );
+      
       habilidade_id = cadastroHabilidade.rows[0].habilidade_id;
     }
 
@@ -639,9 +641,10 @@ const CadastrarTipagem = async (req, res) => {
       tipagem_id = verificaTipagem.rows[0].tipagem_id;
     } else {
       const cadastroTipagem = await pool.query(
-        "INSERT INTO tipagem (tipo) VALUES ($1, $2)",
+        "INSERT INTO tipagem (tipo, imagem_habilidade) VALUES ($1, $2)",
         [nova_tipagem, nova_imagem_habilidade]
       );
+      
       tipagem_id = cadastroTipagem.rows[0].tipagem_id;
     }
 
