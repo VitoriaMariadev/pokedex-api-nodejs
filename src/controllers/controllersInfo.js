@@ -1051,7 +1051,7 @@ const ExcluirTipagem = async (req, res) => {
 
 const ExcluirPokemonControllers = async (req, res) => {
   try {
-    const { pokemon_info_id } = req;
+    const { pokemon_info_id } = req.params;
 
     if (!pokemon_info_id) {
       return res

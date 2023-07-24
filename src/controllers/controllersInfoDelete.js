@@ -181,7 +181,7 @@ const ExcluirTipagem = async (req, res) => {
 
 const ExcluirPokemonControllers = async (req, res) => {
     try {
-        const  pokemon_info_id  = req.params;
+        const pokemon_info_id = req.params;
         console.log(pokemon_info_id)
 
         if (!pokemon_info_id) {
@@ -204,7 +204,8 @@ const ExcluirPokemonControllers = async (req, res) => {
 
 
         return res.status(200).json({Mensagem: "Pokemon excluida com sucesso."})
-    }
+    
+}
 
     catch (erro){
         return res.status(500).json({Mensagem: erro.Mensagem})
