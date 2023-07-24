@@ -628,7 +628,7 @@ const CadastrarTipagem = async (req, res) => {
     }
 
     const nova_tipagem = primeiraLetraMaiuscula(tipagem);
-    const nova_imagem_habilidade = imagem_tipagem.trim();
+    const nova_imagem_tipagem = imagem_tipagem.trim();
     const nova_descricao = descricao.trim();
 
     let tipagem_id;
@@ -641,8 +641,8 @@ const CadastrarTipagem = async (req, res) => {
       tipagem_id = verificaTipagem.rows[0].tipagem_id;
     } else {
       const cadastroTipagem = await pool.query(
-        "INSERT INTO tipagem (tipo, imagem_habilidade) VALUES ($1, $2)",
-        [nova_tipagem, nova_imagem_habilidade]
+        "INSERT INTO tipagem (tipo, imagem_tipagem) VALUES ($1, $2)",
+        [nova_tipagem, nova_imagem_tipagem]
       );
       
       tipagem_id = cadastroTipagem.rows[0].tipagem_id;
