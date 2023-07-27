@@ -151,57 +151,59 @@ const MostrarTodosTipagem = async (req, res) => {
 const MostrarPokemonPeloID = async (req, res) => {
   try {
     const pokemon = await pool.query(`SELECT
-    p.pokemon_info_id,
-    p.nome,
-    p.descricao,
-    p.altura,
-    p.peso,
-    c.categoria,
-    g.genero,
-    p.total,
-    p.hp,
-    p.ataque,
-    p.defesa,
-    p.especial_ataque,
-    p.especial_defesa,
-    p.velocidade,
-    p.imagem,
-    p.numero_pokemon,
-    string_agg(DISTINCT f.fraqueza, ', ') as fraquezas,
-    string_agg(DISTINCT f.imagem_fraqueza, ', ') as img_fraquezas,
-    string_agg(DISTINCT h.habilidade, ', ') as habilidades,
-    string_agg(DISTINCT t.tipo, ', ') as tipos,
-    string_agg(DISTINCT t.imagem_tipagem, ', ') as img_tipo
-FROM
-    pokemon_info p
-    INNER JOIN categorias c ON p.categoria_id = c.categoria_id
-    INNER JOIN generos g ON p.genero_id = g.genero_id
-    INNER JOIN pokemon_fraquezas pf ON p.pokemon_info_id = pf.pokemon_info_id
-    INNER JOIN fraquezas f ON pf.fraquezas_id = f.fraquezas_id
-    INNER JOIN pokemon_habilidades ph ON p.pokemon_info_id = ph.pokemon_info_id
-    INNER JOIN habilidades h ON ph.habilidade_id = h.habilidade_id
-    INNER JOIN pokemon_tipagem pt ON p.pokemon_info_id = pt.pokemon_info_id
-    INNER JOIN tipagem t ON pt.tipagem_id = t.tipagem_id
-WHERE
-    p.pokemon_info_id = ${req.params.id}
-GROUP BY
-    p.pokemon_info_id,
-    p.nome,
-    p.descricao,
-    p.altura,
-    p.peso,
-    c.categoria,
-    g.genero,
-    p.total,
-    p.hp,
-    p.ataque,
-    p.defesa,
-    p.especial_ataque,
-    p.especial_defesa,
-    p.velocidade,
-    p.imagem,
-    p.numero_pokemon;
-`);
+      p.pokemon_info_id,
+      p.nome,
+      p.descricao,
+      p.altura,
+      p.peso,
+      c.categoria,
+      g.genero,
+      p.total,
+      p.hp,
+      p.ataque,
+      p.defesa,
+      p.especial_ataque,
+      p.especial_defesa,
+      p.velocidade,
+      p.imagem,
+      p.numero_pokemon,
+      p.estagio_evolucao,
+      string_agg(DISTINCT f.fraqueza, ', ') as fraquezas,
+      string_agg(DISTINCT f.imagem_fraqueza, ', ') as img_fraquezas,
+      string_agg(DISTINCT h.habilidade, ', ') as habilidades,
+      string_agg(DISTINCT h.descricao, ', ') as descricoes_habilidade,
+      string_agg(DISTINCT t.tipo, ', ') as tipos,
+      string_agg(DISTINCT t.imagem_tipagem, ', ') as img_tipo
+  FROM
+      pokemon_info p
+      INNER JOIN categorias c ON p.categoria_id = c.categoria_id
+      INNER JOIN generos g ON p.genero_id = g.genero_id
+      INNER JOIN pokemon_fraquezas pf ON p.pokemon_info_id = pf.pokemon_info_id
+      INNER JOIN fraquezas f ON pf.fraquezas_id = f.fraquezas_id
+      INNER JOIN pokemon_habilidades ph ON p.pokemon_info_id = ph.pokemon_info_id
+      INNER JOIN habilidades h ON ph.habilidade_id = h.habilidade_id
+      INNER JOIN pokemon_tipagem pt ON p.pokemon_info_id = pt.pokemon_info_id
+      INNER JOIN tipagem t ON pt.tipagem_id = t.tipagem_id
+  WHERE
+      p.pokemon_info_id = ${req.params.id}
+  GROUP BY
+      p.pokemon_info_id,
+      p.nome,
+      p.descricao,
+      p.altura,
+      p.peso,
+      c.categoria,
+      g.genero,
+      p.total,
+      p.hp,
+      p.ataque,
+      p.defesa,
+      p.especial_ataque,
+      p.especial_defesa,
+      p.velocidade,
+      p.imagem,
+      p.numero_pokemon
+      ;`);
     res.status(200).json(pokemon.rows[0]);
   } catch (erro) {
     return res.status(500).json({ Message: erro.Message });
@@ -220,7 +222,7 @@ const MostrarTodosPokemonsFraquezas = async (req, res) => {
     }
 
     const pokemon = await pool.query(
-      `  SELECT
+      `SELECT
       p.pokemon_info_id,
       p.nome,
       p.descricao,
@@ -237,12 +239,14 @@ const MostrarTodosPokemonsFraquezas = async (req, res) => {
       p.velocidade,
       p.imagem,
       p.numero_pokemon,
+      p.estagio_evolucao,
       string_agg(DISTINCT f.fraqueza, ', ') as fraquezas,
       string_agg(DISTINCT f.imagem_fraqueza, ', ') as img_fraquezas,
       string_agg(DISTINCT h.habilidade, ', ') as habilidades,
+      string_agg(DISTINCT h.descricao, ', ') as descricoes_habilidade,
       string_agg(DISTINCT t.tipo, ', ') as tipos,
       string_agg(DISTINCT t.imagem_tipagem, ', ') as img_tipo
-    FROM
+  FROM
       pokemon_info p
       INNER JOIN categorias c ON p.categoria_id = c.categoria_id
       INNER JOIN generos g ON p.genero_id = g.genero_id
@@ -252,7 +256,7 @@ const MostrarTodosPokemonsFraquezas = async (req, res) => {
       INNER JOIN habilidades h ON ph.habilidade_id = h.habilidade_id
       INNER JOIN pokemon_tipagem pt ON p.pokemon_info_id = pt.pokemon_info_id
       INNER JOIN tipagem t ON pt.tipagem_id = t.tipagem_id
-    WHERE f.fraqueza = $1
+    WHERE fraqueza = $1 
     GROUP BY
       p.pokemon_info_id,
       p.nome,
@@ -270,7 +274,7 @@ const MostrarTodosPokemonsFraquezas = async (req, res) => {
       p.velocidade,
       p.imagem,
       p.numero_pokemon
-    ORDER BY p.numero_pokemon;`,
+      ORDER BY numero_pokemon`,
       [fraqueza]
     );
 
@@ -292,27 +296,29 @@ const MostrarTodosPokemonsTipagem = async (req, res) => {
 
     const pokemon = await pool.query(
       `SELECT
-    p.pokemon_info_id,
-    p.nome,
-    p.descricao,
-    p.altura,
-    p.peso,
-    c.categoria,
-    g.genero,
-    p.total,
-    p.hp,
-    p.ataque,
-    p.defesa,
-    p.especial_ataque,
-    p.especial_defesa,
-    p.velocidade,
-    p.imagem,
-    p.numero_pokemon,
-    string_agg(DISTINCT f.fraqueza, ', ') as fraquezas,
-    string_agg(DISTINCT f.imagem_fraqueza, ', ') as img_fraquezas,
-    string_agg(DISTINCT h.habilidade, ', ') as habilidades,
-    string_agg(DISTINCT t.tipo, ', ') as tipos,
-    string_agg(DISTINCT t.imagem_tipagem, ', ') as img_tipo
+      p.pokemon_info_id,
+      p.nome,
+      p.descricao,
+      p.altura,
+      p.peso,
+      c.categoria,
+      g.genero,
+      p.total,
+      p.hp,
+      p.ataque,
+      p.defesa,
+      p.especial_ataque,
+      p.especial_defesa,
+      p.velocidade,
+      p.imagem,
+      p.numero_pokemon,
+      p.estagio_evolucao,
+      string_agg(DISTINCT f.fraqueza, ', ') as fraquezas,
+      string_agg(DISTINCT f.imagem_fraqueza, ', ') as img_fraquezas,
+      string_agg(DISTINCT h.habilidade, ', ') as habilidades,
+      string_agg(DISTINCT h.descricao, ', ') as descricoes_habilidade,
+      string_agg(DISTINCT t.tipo, ', ') as tipos,
+      string_agg(DISTINCT t.imagem_tipagem, ', ') as img_tipo
 FROM
     pokemon_info p
     INNER JOIN categorias c ON p.categoria_id = c.categoria_id
@@ -351,12 +357,53 @@ FROM
   }
 };
 
-const MostrarPokemonPeloNome = async (req, res) => {
-  const { nome } = req.body;
+const MostrarTodosPokemonsHabilidade = async (req, res) => {
+  const { habilidade } = req.body;
 
   try {
-    const pokemon = await pool.query(`
-    SELECT
+    if (!habilidade) {
+      return res
+        .status(200)
+        .json({ Mensagem: "Há campo(s) vazio(s).", status: 400 });
+    }
+
+    const pokemon = await pool.query(
+      `SELECT
+      p.pokemon_info_id,
+      p.nome,
+      p.descricao,
+      p.altura,
+      p.peso,
+      c.categoria,
+      g.genero,
+      p.total,
+      p.hp,
+      p.ataque,
+      p.defesa,
+      p.especial_ataque,
+      p.especial_defesa,
+      p.velocidade,
+      p.imagem,
+      p.numero_pokemon,
+      p.estagio_evolucao,
+      string_agg(DISTINCT f.fraqueza, ', ') as fraquezas,
+      string_agg(DISTINCT f.imagem_fraqueza, ', ') as img_fraquezas,
+      string_agg(DISTINCT h.habilidade, ', ') as habilidades,
+      string_agg(DISTINCT h.descricao, ', ') as descricoes_habilidade,
+      string_agg(DISTINCT t.tipo, ', ') as tipos,
+      string_agg(DISTINCT t.imagem_tipagem, ', ') as img_tipo
+FROM
+    pokemon_info p
+    INNER JOIN categorias c ON p.categoria_id = c.categoria_id
+    INNER JOIN generos g ON p.genero_id = g.genero_id
+    INNER JOIN pokemon_fraquezas pf ON p.pokemon_info_id = pf.pokemon_info_id
+    INNER JOIN fraquezas f ON pf.fraquezas_id = f.fraquezas_id
+    INNER JOIN pokemon_habilidades ph ON p.pokemon_info_id = ph.pokemon_info_id
+    INNER JOIN habilidades h ON ph.habilidade_id = h.habilidade_id
+    INNER JOIN pokemon_tipagem pt ON p.pokemon_info_id = pt.pokemon_info_id
+    INNER JOIN tipagem t ON pt.tipagem_id = t.tipagem_id
+    WHERE habilidade = $1 
+  GROUP BY
     p.pokemon_info_id,
     p.nome,
     p.descricao,
@@ -372,12 +419,119 @@ const MostrarPokemonPeloNome = async (req, res) => {
     p.especial_defesa,
     p.velocidade,
     p.imagem,
-    p.numero_pokemon,
-    string_agg(DISTINCT f.fraqueza, ', ') as fraquezas,
-    string_agg(DISTINCT f.imagem_fraqueza, ', ') as img_fraquezas,
-    string_agg(DISTINCT h.habilidade, ', ') as habilidades,
-    string_agg(DISTINCT t.tipo, ', ') as tipos,
-    string_agg(DISTINCT t.imagem_tipagem, ', ') as img_tipo
+    p.numero_pokemon
+    ORDER BY numero_pokemon`,
+      [habilidade]
+    );
+
+    return res.status(200).json(pokemon.rows);
+  } catch (erro) {
+    return res.status(500).json({ Mensagem: erro.message });
+  }
+};
+
+const MostrarTodosPokemonsCategoria = async (req, res) => {
+  const { categoria } = req.body;
+
+  try {
+    if (!categoria) {
+      return res
+        .status(200)
+        .json({ Mensagem: "Há campo(s) vazio(s).", status: 400 });
+    }
+
+    const pokemon = await pool.query(
+      `SELECT
+      p.pokemon_info_id,
+      p.nome,
+      p.descricao,
+      p.altura,
+      p.peso,
+      c.categoria,
+      g.genero,
+      p.total,
+      p.hp,
+      p.ataque,
+      p.defesa,
+      p.especial_ataque,
+      p.especial_defesa,
+      p.velocidade,
+      p.imagem,
+      p.numero_pokemon,
+      p.estagio_evolucao,
+      string_agg(DISTINCT f.fraqueza, ', ') as fraquezas,
+      string_agg(DISTINCT f.imagem_fraqueza, ', ') as img_fraquezas,
+      string_agg(DISTINCT h.habilidade, ', ') as habilidades,
+      string_agg(DISTINCT h.descricao, ', ') as descricoes_habilidade,
+      string_agg(DISTINCT t.tipo, ', ') as tipos,
+      string_agg(DISTINCT t.imagem_tipagem, ', ') as img_tipo
+FROM
+    pokemon_info p
+    INNER JOIN categorias c ON p.categoria_id = c.categoria_id
+    INNER JOIN generos g ON p.genero_id = g.genero_id
+    INNER JOIN pokemon_fraquezas pf ON p.pokemon_info_id = pf.pokemon_info_id
+    INNER JOIN fraquezas f ON pf.fraquezas_id = f.fraquezas_id
+    INNER JOIN pokemon_habilidades ph ON p.pokemon_info_id = ph.pokemon_info_id
+    INNER JOIN habilidades h ON ph.habilidade_id = h.habilidade_id
+    INNER JOIN pokemon_tipagem pt ON p.pokemon_info_id = pt.pokemon_info_id
+    INNER JOIN tipagem t ON pt.tipagem_id = t.tipagem_id
+    WHERE categoria = $1 
+  GROUP BY
+    p.pokemon_info_id,
+    p.nome,
+    p.descricao,
+    p.altura,
+    p.peso,
+    c.categoria,
+    g.genero,
+    p.total,
+    p.hp,
+    p.ataque,
+    p.defesa,
+    p.especial_ataque,
+    p.especial_defesa,
+    p.velocidade,
+    p.imagem,
+    p.numero_pokemon
+    ORDER BY numero_pokemon`,
+      [categoria]
+    );
+
+    return res.status(200).json(pokemon.rows);
+  } catch (erro) {
+    return res.status(500).json({ Mensagem: erro.message });
+  }
+};
+
+const MostrarPokemonPeloNome = async (req, res) => {
+  const { nome } = req.body;
+
+  try {
+    const pokemon = await pool.query(`
+    SELECT
+      p.pokemon_info_id,
+      p.nome,
+      p.descricao,
+      p.altura,
+      p.peso,
+      c.categoria,
+      g.genero,
+      p.total,
+      p.hp,
+      p.ataque,
+      p.defesa,
+      p.especial_ataque,
+      p.especial_defesa,
+      p.velocidade,
+      p.imagem,
+      p.numero_pokemon,
+      p.estagio_evolucao,
+      string_agg(DISTINCT f.fraqueza, ', ') as fraquezas,
+      string_agg(DISTINCT f.imagem_fraqueza, ', ') as img_fraquezas,
+      string_agg(DISTINCT h.habilidade, ', ') as habilidades,
+      string_agg(DISTINCT h.descricao, ', ') as descricoes_habilidade,
+      string_agg(DISTINCT t.tipo, ', ') as tipos,
+      string_agg(DISTINCT t.imagem_tipagem, ', ') as img_tipo
 FROM
     pokemon_info p
     INNER JOIN categorias c ON p.categoria_id = c.categoria_id
@@ -444,9 +598,11 @@ const MostrarTodosPokemonsAleatorio = async (req, res) => {
     p.velocidade,
     p.imagem,
     p.numero_pokemon,
+    p.estagio_evolucao,
     string_agg(DISTINCT f.fraqueza, ', ') as fraquezas,
     string_agg(DISTINCT f.imagem_fraqueza, ', ') as img_fraquezas,
     string_agg(DISTINCT h.habilidade, ', ') as habilidades,
+    string_agg(DISTINCT h.descricao, ', ') as descricoes_habilidade,
     string_agg(DISTINCT t.tipo, ', ') as tipos,
     string_agg(DISTINCT t.imagem_tipagem, ', ') as img_tipo
 FROM
@@ -516,7 +672,7 @@ const CadastrarCategoria = async (req, res) => {
         "INSERT INTO categorias (categoria) VALUES ($1)",
         [nova_categoria]
       );
-      
+
       categoria_id = cadastroCategoria.rows[0].categoria_id;
     }
     return res
@@ -593,7 +749,7 @@ const CadastrarHabilidade = async (req, res) => {
         "INSERT INTO habilidades (habilidade, descricao) VALUES ($1, $2)",
         [nova_habilidade, nova_descricao]
       );
-      
+
       habilidade_id = cadastroHabilidade.rows[0].habilidade_id;
     }
 
@@ -633,7 +789,7 @@ const CadastrarTipagem = async (req, res) => {
         "INSERT INTO tipagem (tipo, imagem_tipagem) VALUES ($1, $2)",
         [nova_tipagem, nova_imagem_tipagem]
       );
-      
+
       tipagem_id = cadastroTipagem.rows[0].tipagem_id;
     }
 
@@ -646,7 +802,6 @@ const CadastrarTipagem = async (req, res) => {
       .json({ Mensagem: "Erro ao cadastrar tipagem.", erro });
   }
 };
-
 
 const CadastrarPokemonControllers = async (req, res) => {
   const {
@@ -667,10 +822,8 @@ const CadastrarPokemonControllers = async (req, res) => {
     fraqueza,
     habilidade,
     tipagem,
-    // estagio_evolucao,
+    estagio_evolucao,
   } = req.body;
-
-  const estagio_evolucao = 5
 
   // Formatar os campos
   const nomeFormatado = primeiraLetraMaiuscula(nome);
@@ -710,21 +863,20 @@ const CadastrarPokemonControllers = async (req, res) => {
       !numeroPokemonFormatado ||
       isNaN(estagioEvolucaoFormatado)
     ) {
-      return res
-        .status(400)
-        .json({ Mensagem: "Há campo(s) inválido(s) ou vazio(s).", status: 400 });
+      return res.status(400).json({
+        Mensagem: "Há campo(s) inválido(s) ou vazio(s).",
+        status: 400,
+      });
     }
-    console.log("entrou!!")
 
-    const total =
+    let total =
       (ataqueFormatado +
         defesaFormatada +
         hpFormatado +
         especialAtaqueFormatado +
         especialDefesaFormatada +
-        velocidadeFormatada) 
-
-    console.log(total)
+        velocidadeFormatada) /
+      6;
 
     // Verifica categoria
     const verificaCategoria = await pool.query(
@@ -758,9 +910,10 @@ const CadastrarPokemonControllers = async (req, res) => {
         [tipagem_nome]
       );
       if (verificaTipagem.rows.length === 0) {
-        return res
-          .status(400)
-          .json({ Mensagem: `Tipagem inválida: ${tipagem_nome}.`, status: 400 });
+        return res.status(400).json({
+          Mensagem: `Tipo inválido: ${tipagem_nome}.`,
+          status: 400,
+        });
       }
       const tipagem_id = verificaTipagem.rows[0].tipagem_id;
       list_tipagem_id.push(tipagem_id);
@@ -774,9 +927,10 @@ const CadastrarPokemonControllers = async (req, res) => {
         [fraqueza_nome]
       );
       if (verificaFraqueza.rows.length === 0) {
-        return res
-          .status(400)
-          .json({ Mensagem: `Fraqueza inválida: ${fraqueza_nome}.`, status: 400 });
+        return res.status(400).json({
+          Mensagem: `Fraqueza inválida: ${fraqueza_nome}.`,
+          status: 400,
+        });
       }
       const fraquezas_id = verificaFraqueza.rows[0].fraquezas_id;
       list_fraqueza_id.push(fraquezas_id);
@@ -796,18 +950,17 @@ const CadastrarPokemonControllers = async (req, res) => {
       list_habilidade_id.push(habilidade_id);
     }
 
-
     const verificaNumeroPokemon = await pool.query(
       "SELECT pokemon_info_id FROM pokemon_info WHERE numero_pokemon = $1",
       [numeroPokemonFormatado]
     );
-  
+
     if (verificaNumeroPokemon.rows.length > 0) {
       return res
         .status(400)
         .json({ Mensagem: "Número pokemon já cadastrado!", status: 400 });
     }
-    console.log(total)
+    console.log(total);
     // Inserindo nas tabelas
     const CadastroPokemon = await pool.query(
       `INSERT INTO pokemon_info (
@@ -844,10 +997,10 @@ const CadastrarPokemonControllers = async (req, res) => {
         velocidadeFormatada,
         imagemFormatada,
         numeroPokemonFormatado,
-        estagioEvolucaoFormatado
+        estagioEvolucaoFormatado,
       ]
     );
-      console.log(CadastroPokemon.rows)
+    console.log(CadastroPokemon.rows);
     const pokemon_info_id = CadastroPokemon.rows[0].pokemon_info_id;
 
     // Relacionando as tabelas
@@ -882,8 +1035,6 @@ const CadastrarPokemonControllers = async (req, res) => {
       .json({ Mensagem: "Erro ao cadastrar pokemon.", erro });
   }
 };
-
-
 
 // funções de exclusão
 const ExcluirCategoria = async (req, res) => {
@@ -1100,7 +1251,7 @@ const EditarCategoria = async (req, res) => {
   const { categoria, novoNomeCategoria } = req.body;
 
   try {
-    if (!categoria) {
+    if (!novoNomeCategoria) {
       return res
         .status(200)
         .json({ Mensagem: "Há campo(s) vazio(s).", status: 400 });
@@ -1134,10 +1285,10 @@ const EditarFraqueza = async (req, res) => {
   const { fraqueza, novoNomeFraqueza, NovaImagemFraqueza } = req.body;
 
   try {
-    if (!fraqueza) {
+    if (!novoNomeFraqueza && !NovaImagemFraqueza) {
       return res
         .status(200)
-        .json({ Mensagem: "Há campo(s) vazio(s).", status: 400 });
+        .json({ Mensagem: "Altere pelo menos um campo.", status: 400 });
     }
 
     const tratamentoNomeFraqueza = primeiraLetraMaiuscula(fraqueza);
@@ -1169,10 +1320,10 @@ const EditarHabilidade = async (req, res) => {
   const { habilidade, novoNomeHabildade, novaDescricao } = req.body;
 
   try {
-    if (!habilidade) {
+    if (!novoNomeHabildade && !novaDescricao) {
       return res
         .status(200)
-        .json({ Mensagem: "Há campo(s) vazio(s).", status: 400 });
+        .json({ Mensagem: "Altere pelo menos um campo.", status: 400 });
     }
 
     const tratamentoNomeHabilidade = primeiraLetraMaiuscula(habilidade);
@@ -1207,10 +1358,10 @@ const EditarTipagem = async (req, res) => {
   const { tipo, NovoNomeTipo, NovaImagemTipagem } = req.body;
 
   try {
-    if (!tipo) {
+    if (!NovoNomeTipo && !NovaImagemTipagem) {
       return res
         .status(200)
-        .json({ Mensagem: "Há campo(s) vazio(s).", status: 400 });
+        .json({ Mensagem: "Altere pelo menos um campo.", status: 400 });
     }
 
     const tratamentoNomeTipo = primeiraLetraMaiuscula(tipo);
@@ -1240,41 +1391,45 @@ const EditarTipagem = async (req, res) => {
 
 const EditarPokemon = async (req, res) => {
   try {
+    const { pokemon_id } = req.params.id;
+
     const {
       novoNome,
       novaDescricao,
-      novaImagem,
-      novaCategoria,
       novaAltura,
       novoPeso,
-      novoNumeroPokemon,
-      novoGenero,
-      novaTipagem,
-      novaHabilidade,
-      novaFraqueza,
+      novaCategoria,
       novoHP,
+      novoAtaque,
+      novaDefesa,
       novoAtaqueEspecial,
       novaDefesaEspecial,
-      novaDefesa,
-      novoAtaque,
       novaVelocidade,
+      novaImagem,
+      novoNumeroPokemon,
+      novoGenero,
+
+      novaFraqueza,
+      novaHabilidade,
+      novaTipagem,
+      novaEstagioEvolucao,
     } = req.body;
 
     // Formatar os campos
-  const nomeFormatado = primeiraLetraMaiuscula(novoNome);
-  const descricaoFormatada = primeiraLetraMaiuscula(novaDescricao);
-  const alturaFormatada = String(novaAltura).trim();
-  const pesoFormatado = String(novoPeso).trim();
-  const categoriaFormatada = primeiraLetraMaiuscula(novaCategoria);
-  const generoFormatado = primeiraLetraMaiuscula(novoGenero);
-  const hpFormatado = String(novoHP).trim();
-  const ataqueFormatado = String(novoAtaque).trim();
-  const defesaFormatada = String(novaDefesa).trim();
-  const especialAtaqueFormatado = String(novoAtaqueEspecial).trim();
-  const especialDefesaFormatada = String(novaDefesaEspecial).trim();
-  const velocidadeFormatada = String(novaVelocidade).trim();
-  const imagemFormatada = novaImagem.trim();
-  const numeroPokemonFormatado = String(novoNumeroPokemon).trim();
+    const nomeFormatado = primeiraLetraMaiuscula(novoNome);
+    const descricaoFormatada = primeiraLetraMaiuscula(novaDescricao);
+    const imagemFormatada = novaImagem.trim();
+    const categoriaFormatada = primeiraLetraMaiuscula(novaCategoria);
+    const alturaFormatada = String(novaAltura).trim();
+    const pesoFormatado = String(novoPeso).trim();
+    const numeroPokemonFormatado = String(novoNumeroPokemon).trim();
+    const hpFormatado = String(novoHP).trim();
+    const ataqueFormatado = String(novoAtaque).trim();
+    const defesaFormatada = String(novaDefesa).trim();
+    const especialAtaqueFormatado = String(novoAtaqueEspecial).trim();
+    const especialDefesaFormatada = String(novaDefesaEspecial).trim();
+    const velocidadeFormatada = String(novaVelocidade).trim();
+    const generoFormatado = primeiraLetraMaiuscula(novoGenero);
 
     if (
       !nomeFormatado &&
@@ -1284,27 +1439,270 @@ const EditarPokemon = async (req, res) => {
       !alturaFormatada &&
       !pesoFormatado &&
       !numeroPokemonFormatado &&
+      !hpFormatado &&
+      !ataqueFormatado &&
+      !defesaFormatada &&
+      !especialAtaqueFormatado &&
+      !especialDefesaFormatada &&
+      !velocidadeFormatada &&
       !generoFormatado &&
-      !novaTipagem &&
-      !novaHabilidade &&
       !novaFraqueza &&
-      !novoHP &&
-      !novoAtaqueEspecial &&
-      !novaDefesaEspecial &&
-      !novaDefesa &&
-      !novoAtaque &&
-      !novaVelocidade
+      !novaHabilidade &&
+      !novaTipagem &&
+      !novaEstagioEvolucao
     ) {
       return res
         .status(200)
         .json({ Mensagem: "Modifique pelo menos um campo.", status: 400 });
     }
+
+    let novoTotal =
+      (ataqueFormatado +
+        defesaFormatada +
+        hpFormatado +
+        especialAtaqueFormatado +
+        especialDefesaFormatada +
+        velocidadeFormatada) /
+      6;
+
+    if (nomeFormatado) {
+      await pool.query(
+        "UPDATE pokemon_info SET nome = $1 WHERE pokemon_info_id = $2",
+        [nomeFormatado, pokemon_id]
+      );
+    }
+
+    if (descricaoFormatada) {
+      await pool.query(
+        "UPDATE pokemon_info SET descricao = $1 WHERE pokemon_info_id = $2",
+        [descricaoFormatada, pokemon_id]
+      );
+    }
+
+    if (imagemFormatada) {
+      await pool.query(
+        "UPDATE pokemon_info SET imagem = $1 WHERE pokemon_info_id = $2",
+        [imagemFormatada, pokemon_id]
+      );
+    }
+
+    if (categoriaFormatada) {
+      const verificaCategoria = await pool.query(
+        "SELECT categoria_id FROM categorias WHERE categoria = $1",
+        [categoriaFormatada]
+      );
+      if (verificaCategoria.rows.length === 0) {
+        return res
+          .status(400)
+          .json({ Mensagem: "Categoria inválida.", status: 400 });
+      }
+      const categoria_id = verificaCategoria.rows[0].categoria_id;
+
+      await pool.query(
+        "UPDATE pokemon_info SET categoria_id = $1 WHERE pokemon_info_id = $2",
+        [categoria_id, pokemon_id]
+      );
+    }
+
+    if (alturaFormatada) {
+      await pool.query(
+        "UPDATE pokemon_info SET altura = $1 WHERE pokemon_info_id = $2",
+        [alturaFormatada, pokemon_id]
+      );
+    }
+
+    if (pesoFormatado) {
+      await pool.query(
+        "UPDATE pokemon_info SET peso = $1 WHERE pokemon_info_id = $2",
+        [pesoFormatado, pokemon_id]
+      );
+    }
+
+    if (numeroPokemonFormatado) {
+      const verificaNumeroPokemon = await pool.query(
+        "SELECT pokemon_info_id FROM pokemon_info WHERE numero_pokemon = $1",
+        [numeroPokemonFormatado]
+      );
+
+      if (verificaNumeroPokemon.rows.length > 0) {
+        return res
+          .status(400)
+          .json({ Mensagem: "Número pokemon já cadastrado!", status: 400 });
+      }
+
+      await pool.query(
+        "UPDATE pokemon_info SET numero_pokemon = $1 WHERE pokemon_info_id = $2",
+        [numeroPokemonFormatado, pokemon_id]
+      );
+    }
+
+    if (hpFormatado) {
+      await pool.query(
+        "UPDATE pokemon_info SET hp = $1 WHERE pokemon_info_id = $2",
+        [hpFormatado, pokemon_id]
+      );
+    }
+
+    if (ataqueFormatado) {
+      await pool.query(
+        "UPDATE pokemon_info SET ataque = $1 WHERE pokemon_info_id = $2",
+        [ataqueFormatado, pokemon_id]
+      );
+    }
+
+    if (defesaFormatada) {
+      await pool.query(
+        "UPDATE pokemon_info SET defesa = $1 WHERE pokemon_info_id = $2",
+        [defesaFormatada, pokemon_id]
+      );
+    }
+
+    if (especialAtaqueFormatado) {
+      await pool.query(
+        "UPDATE pokemon_info SET especial_ataque = $1 WHERE pokemon_info_id = $2",
+        [especialAtaqueFormatado, pokemon_id]
+      );
+    }
+
+    if (especialAtaqueFormatado) {
+      await pool.query(
+        "UPDATE pokemon_info SET especial_defesa = $1 WHERE pokemon_info_id = $2",
+        [especialAtaqueFormatado, pokemon_id]
+      );
+    }
+
+    if (velocidadeFormatada) {
+      await pool.query(
+        "UPDATE pokemon_info SET velocidade = $1 WHERE pokemon_info_id = $2",
+        [velocidadeFormatada, pokemon_id]
+      );
+    }
+
+    if (velocidadeFormatada) {
+      await pool.query(
+        "UPDATE pokemon_info SET velocidade = $1 WHERE pokemon_info_id = $2",
+        [velocidadeFormatada, pokemon_id]
+      );
+    }
+
+    if (generoFormatado) {
+      const verificaGenero = await pool.query(
+        "SELECT genero_id FROM generos WHERE genero = $1",
+        [generoFormatado]
+      );
+      if (verificaGenero.rows.length === 0) {
+        return res
+          .status(400)
+          .json({ Mensagem: "Gênero inválido.", status: 400 });
+      }
+      const genero_id = verificaGenero.rows[0].genero_id;
+
+      await pool.query(
+        "UPDATE pokemon_info SET genero_id = $1 WHERE pokemon_info_id = $2",
+        [genero_id, pokemon_id]
+      );
+    }
+
+    if (novaFraqueza) {
+      // deletando relacionamentos
+      await pool.query(
+        `DELETE FROM public.pokemon_fraquezas
+      WHERE pokemon_info_id = %1`,
+        [pokemon_id]
+      );
+
+      const list_fraqueza_id = [];
+      for (const fraqueza_nome of fraqueza) {
+        const verificaFraqueza = await pool.query(
+          "SELECT fraquezas_id FROM fraquezas WHERE fraqueza = $1",
+          [fraqueza_nome]
+        );
+        if (verificaFraqueza.rows.length === 0) {
+          return res.status(400).json({
+            Mensagem: `Fraqueza inválida: ${fraqueza_nome}.`,
+            status: 400,
+          });
+        }
+        const fraquezas_id = verificaFraqueza.rows[0].fraquezas_id;
+        list_fraqueza_id.push(fraquezas_id);
+      }
+
+      for (const fraqueza_id of list_fraqueza_id) {
+        await pool.query(
+          "INSERT INTO pokemon_fraquezas (pokemon_info_id, fraquezas_id) VALUES ($1, $2)",
+          [pokemon_id, fraqueza_id]
+        );
+      }
+    }
+
+    if (novaHabilidade) {
+      // deletando relacionamentos
+      await pool.query(
+        `DELETE FROM public.pokemon_habilidades
+      WHERE pokemon_info_id = %1`,
+        [pokemon_id]
+      );
+
+      const list_habilidades_id = [];
+      for (const habilidade_nome of novaHabilidade) {
+        const verificaHabilidade = await pool.query(
+          "SELECT habilidade_id FROM habilidades WHERE habilidade = $1",
+          [habilidade_nome]
+        );
+        if (verificaHabilidade.rows.length === 0) {
+          return res.status(400).json({
+            Mensagem: `Habilidade inválida: ${habilidade_nome}.`,
+            status: 400,
+          });
+        }
+        const habilidades_id = verificaHabilidade.rows[0].habilidade_id;
+        list_habilidades_id.push(habilidades_id);
+      }
+
+      for (const habilidade_id of list_habilidades_id) {
+        await pool.query(
+          "INSERT INTO pokemon_habilidades (pokemon_info_id, habilidade_id) VALUES ($1, $2)",
+          [pokemon_id, habilidade_id]
+        );
+      }
+    }
+
+    if (novaTipagem) {
+      // deletando relacionamentos
+      await pool.query(
+        `DELETE FROM public.pokemon_tipagem
+      WHERE pokemon_info_id = %1`,
+        [pokemon_id]
+      );
+
+      const list_tipagem_id = [];
+      for (const tipagem_nome of novaTipagem) {
+        const verificaTipagem = await pool.query(
+          "SELECT tipagem_id FROM tipagem WHERE tipo = $1",
+          [tipagem_nome]
+        );
+        if (verificaTipagem.rows.length === 0) {
+          return res.status(400).json({
+            Mensagem: `Tipo inválida: ${tipagem_nome}.`,
+            status: 400,
+          });
+        }
+        const tipos_id = verificaTipagem.rows[0].tipagem_id;
+        list_tipagem_id.push(tipos_id);
+      }
+
+      for (const tipo_id of list_tipagem_id) {
+        await pool.query(
+          "INSERT INTO pokemon_tipagem (pokemon_info_id, tipagem_id) VALUES ($1, $2)",
+          [pokemon_id, tipo_id]
+        );
+      }
+    }
+
+    return res.status(200).json({ Mensagem: "Pokemon editado com sucesso." });
   } catch (erro) {
     res.status(500).json({ Mensagem: "Erro ao editar pokemon.", erro });
   }
-
-
-
 };
 
 // grade evolutiva
@@ -1423,52 +1821,61 @@ const MostrarGradeEvolutivaPokemon = async (req, res) => {
 };
 
 const CadastrarGradeEvolutivaPokemon = async (req, res) => {
-  // const { nomePokemon, numeroPokemon, nomeEvolucaoPokemon, numeroPokemonEvolucao, nivelEvolucao} = req.body;
-  // // Formatar os campos
-  // try {
-  //   if (!nomePokemon || !numeroPokemon || !nomeEvolucaoPokemon || !numeroPokemonEvolucao || !nivelEvolucao) {
-  //     return res.status(400).json({ Mensagem: 'Há campo(s) vazio(s).', status: 400 });
-  //   }
-  //   const numeroPokemonFormatado = String(numeroPokemon).trim();
-  //   const numeroPokemonEvolucaoFormatado = String(numeroPokemonEvolucao).trim();
-  //   const nivelEvolucaoFormatado = nivelEvolucao.trim()
-  //   // Verificar pokemon
-  //   let pokemon_id;
-  //   const verificaNumeroPokemon = await pool.query(
-  //     `SELECT pokemon_info_id FROM pokemon_info WHERE numero_pokemon = $1`,
-  //     [numeroPokemonFormatado]
-  //   );
-  //   pokemon_id = verificaNumeroPokemon.rows[0].pokemon_info_id;
-  //   // Verificar evolucao pokemon
-  //   let pokemon_id_evolucao;
-  //   const verificaNumeroPokemonEvolucao = await pool.query(
-  //     `SELECT pokemon_info_id FROM pokemon_info WHERE numero_pokemon = $1`,
-  //     [numeroPokemonEvolucaoFormatado]
-  //   );
-  //   pokemon_id_evolucao = verificaNumeroPokemonEvolucao.rows[0].pokemon_info_id;
-  //   // Inserir nas tabelas
-  //   const cadastroPokemon = await pool.query(
-  //     `INSERT INTO pokemon_evolucoes (
-  //       pokemon_info_id,
-  //       evolucao_pokemon_info_id,
-  //       nivel
-  //     ) VALUES ($1, $2, $3) RETURNING pokemon_info_id`,
-  //     [
-  //       pokemon_id,
-  //       evolucao_pokemon_info_id,
-  //       nivelEvolucaoFormatado
-  //     ]
-  //   );
-  //   const pokemon_info_id = cadastroPokemon.rows[0].pokemon_info_id;
-  //   return res.status(200).json({ Mensagem: 'Grade cadastrada com sucesso.' });
-  // } catch (erro) {
-  //   return res.status(500).json({ Mensagem: 'Erro ao cadastrar grade pokemon.', erro });
-  // }
+  const { numeroPokemon, numeroPokemonEvolucao} = req.body;
+  // Formatar os campos
+  try {
+    if (!numeroPokemon || !numeroPokemonEvolucao) {
+      return res.status(400).json({ Mensagem: 'Há campo(s) vazio(s).', status: 400 });
+    }
+    const numeroPokemonFormatado = String(numeroPokemon).trim();
+    const numeroPokemonEvolucaoFormatado = String(numeroPokemonEvolucao).trim();
+    // Verificar pokemon
+    let pokemon_id;
+    const verificaNumeroPokemon = await pool.query(
+      `SELECT pokemon_info_id FROM pokemon_info WHERE numero_pokemon = $1`,
+      [numeroPokemonFormatado]
+    );
+    pokemon_id = verificaNumeroPokemon.rows[0].pokemon_info_id;
+    // Verificar evolucao pokemon
+    let pokemon_id_evolucao;
+    const verificaNumeroPokemonEvolucao = await pool.query(
+      `SELECT pokemon_info_id FROM pokemon_info WHERE numero_pokemon = $1`,
+      [numeroPokemonEvolucaoFormatado]
+    );
+    pokemon_id_evolucao = verificaNumeroPokemonEvolucao.rows[0].pokemon_info_id;
+
+    verificaGradeJaCadastrada = await pool.query(`
+    select * from pokemon_evolucoes where pokemon_info_id = $1 and evolucao_pokemon_info_id = $2
+    `, [pokemon_id, pokemon_id_evolucao])
+
+    if (verificaGradeJaCadastrada.rows.length > 0) {
+      return res
+        .status(200)
+        .json({ Mensagem: "Grade evolutiva já cadastrada!", status: 400 });
+    }
+    // Inserir nas tabelas
+    const cadastroPokemon = await pool.query(
+      `INSERT INTO pokemon_evolucoes (
+        pokemon_info_id,
+        evolucao_pokemon_info_id
+      ) VALUES ($1, $2) RETURNING pokemon_info_id`,
+      [
+        pokemon_id,
+        evolucao_pokemon_info_id
+      ]
+    );
+    const pokemon_info_id = cadastroPokemon.rows[0].pokemon_info_id;
+
+
+    return res.status(200).json({ Mensagem: 'Grade cadastrada com sucesso!' });
+  } catch (erro) {
+    return res.status(500).json({ Mensagem: 'Erro ao cadastrar grade pokemon.', erro });
+  }
 };
 
 const ExcluirGradeEvolutivaPokemon = async (req, res) => {
   try {
-    await pool.query(`Delete from  pokemon_evolucoes`);
+    await pool.query(`Delete from pokemon_evolucoes`);
     return res.status(200).json({ Mensagem: "Grade excluida com sucesso." });
   } catch {
     return res
@@ -1521,4 +1928,11 @@ export {
   MostrarGradeEvolutivaPokemon,
   primeiraLetraMaiuscula,
   ExcluirGradeEvolutivaPokemon,
+  EditarCategoria,
+  EditarHabilidade,
+  EditarFraqueza,
+  EditarPokemon,
+  EditarTipagem,
+  MostrarTodosPokemonsCategoria,
+  MostrarTodosPokemonsHabilidade,
 };

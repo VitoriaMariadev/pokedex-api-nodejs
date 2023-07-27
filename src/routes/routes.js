@@ -1,12 +1,36 @@
 import { Router } from "express"
-import {MostrarTodosPokemonsControllers, MostrarTodasCategorias, MostrarTodasFraquezas,
-    MostrarTodosGeneros, MostrarPokemonPeloNome, MostrarTodosTipagem, MostrarTodasHabilidades, MostrarPokemonPeloID,
-    MostrarTodosPokemonsFraquezas, MostrarTodosPokemonsTipagem, MostrarTodosPokemonsAleatorio,
-    CadastrarPokemonControllers, CadastrarCategoria, CadastrarFraqueza, CadastrarTipagem, CadastrarHabilidade,
-    ExcluirPokemonControllers, ExcluirCategoria, ExcluirFraqueza, ExcluirTipagem, ExcluirHabilidade, 
-
-    CadastrarGradeEvolutivaPokemon, MostrarGradeEvolutivaPokemon,
-    primeiraLetraMaiuscula, ExcluirGradeEvolutivaPokemon
+import {MostrarTodosPokemonsControllers,
+    MostrarTodasCategorias,
+    MostrarTodasFraquezas,
+    MostrarTodosGeneros,
+    MostrarPokemonPeloNome,
+    MostrarTodosTipagem,
+    MostrarTodasHabilidades,
+    MostrarPokemonPeloID,
+    MostrarTodosPokemonsFraquezas,
+    MostrarTodosPokemonsTipagem,
+    MostrarTodosPokemonsAleatorio,
+    CadastrarPokemonControllers,
+    CadastrarCategoria,
+    CadastrarFraqueza,
+    CadastrarTipagem,
+    CadastrarHabilidade,
+    ExcluirPokemonControllers,
+    ExcluirCategoria,
+    ExcluirFraqueza,
+    ExcluirTipagem,
+    ExcluirHabilidade,
+    CadastrarGradeEvolutivaPokemon,
+    MostrarGradeEvolutivaPokemon,
+    primeiraLetraMaiuscula,
+    ExcluirGradeEvolutivaPokemon,
+    EditarCategoria,
+    EditarHabilidade,
+    EditarFraqueza,
+    EditarPokemon,
+    EditarTipagem,
+    MostrarTodosPokemonsCategoria,
+    MostrarTodosPokemonsHabilidade,
     } from "../controllers/controllersInfo.js"
 
 import { CadastrarUsuarioControllers, Login, validarToken, deletarToken, EncontrarUsuarioId, removeUsuarioID, EncontrarTodosUsuarios } from "../controllers/controllersUser.js"
@@ -27,6 +51,8 @@ route.post("/mostrar/nome", MostrarPokemonPeloNome)
 route.get("/mostrar_aleatorio", MostrarTodosPokemonsAleatorio)
 route.post("/mostrar/por_tipagem", MostrarTodosPokemonsTipagem)
 route.post("/mostrar/por_fraquezas", MostrarTodosPokemonsFraquezas)
+route.post("/mostrar/por_habilidade", MostrarTodosPokemonsHabilidade)
+route.post("/mostrar/por_categoria", MostrarTodosPokemonsCategoria)
 
 // rotas cadastrar
 route.post("/cadastrar/pokemon", CadastrarPokemonControllers)
@@ -41,6 +67,13 @@ route.delete("/excluir/categoria", ExcluirCategoria)
 route.delete("/excluir/fraqueza", ExcluirFraqueza)
 route.delete("/excluir/tipagem", ExcluirTipagem)
 route.delete("/excluir/habilidade", ExcluirHabilidade)
+
+// rotas editar
+route.patch("/editar_pokemon", EditarPokemon)
+route.patch("/editar_categoria", EditarCategoria)
+route.patch("/editar_fraqueza", EditarFraqueza)
+route.patch("/editar_tipagem", EditarTipagem)
+route.patch("/editar_habilidade", EditarHabilidade)
 
 
 // usuarios
