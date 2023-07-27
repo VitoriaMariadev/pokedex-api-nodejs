@@ -842,6 +842,8 @@ const CadastrarPokemonControllers = async (req, res) => {
   const numeroPokemonFormatado = numero_pokemon.trim();
   const estagioEvolucaoFormatado = parseInt(estagio_evolucao);
 
+  especialAtaqueFormatado = 5
+
   try {
     if (
       !nomeFormatado ||
