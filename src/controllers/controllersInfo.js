@@ -822,8 +822,9 @@ const CadastrarPokemonControllers = async (req, res) => {
     fraqueza,
     habilidade,
     tipagem,
-    estagio_evolucao,
   } = req.body;
+
+  const estagio_evolucao = 5
 
   // Formatar os campos
   const nomeFormatado = primeiraLetraMaiuscula(nome);
@@ -841,8 +842,6 @@ const CadastrarPokemonControllers = async (req, res) => {
   const imagemFormatada = imagem.trim();
   const numeroPokemonFormatado = numero_pokemon.trim();
   const estagioEvolucaoFormatado = parseInt(estagio_evolucao);
-
-  especialAtaqueFormatado = 5
 
   try {
     if (
