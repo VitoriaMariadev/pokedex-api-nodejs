@@ -1822,7 +1822,7 @@ const MostrarGradeEvolutivaPokemon = async (req, res) => {
 };
 
 const CadastrarGradeEvolutivaPokemon = async (req, res) => {
-  const { numeroPokemon, numeroPokemonEvolucao} = req.body;
+  const { numeroPokemon, numeroPokemonEvolucao } = req.body; 
   // Formatar os campos
   try {
     if (!numeroPokemon || !numeroPokemonEvolucao) {
@@ -1830,49 +1830,54 @@ const CadastrarGradeEvolutivaPokemon = async (req, res) => {
     }
     const numeroPokemonFormatado = String(numeroPokemon).trim();
     const numeroPokemonEvolucaoFormatado = String(numeroPokemonEvolucao).trim();
+
     // Verificar pokemon
-    let pokemon_id;
     const verificaNumeroPokemon = await pool.query(
       `SELECT pokemon_info_id FROM pokemon_info WHERE numero_pokemon = $1`,
       [numeroPokemonFormatado]
     );
-    pokemon_id = verificaNumeroPokemon.rows[0].pokemon_info_id;
+
+    if (verificaNumeroPokemon.rows.length === 0) {
+      return res.status(404).json({ Mensagem: 'Número de Pokémon não encontrado.', status: 404 });
+    }
+
+    const pokemon_id = verificaNumeroPokemon.rows[0].pokemon_info_id;
+
     // Verificar evolucao pokemon
-    let pokemon_id_evolucao;
     const verificaNumeroPokemonEvolucao = await pool.query(
       `SELECT pokemon_info_id FROM pokemon_info WHERE numero_pokemon = $1`,
       [numeroPokemonEvolucaoFormatado]
     );
-    pokemon_id_evolucao = verificaNumeroPokemonEvolucao.rows[0].pokemon_info_id;
 
-    verificaGradeJaCadastrada = await pool.query(`
-    select * from pokemon_evolucoes where pokemon_info_id = $1 and evolucao_pokemon_info_id = $2
-    `, [pokemon_id, pokemon_id_evolucao])
+    if (verificaNumeroPokemonEvolucao.rows.length === 0) {
+      return res.status(404).json({ Mensagem: 'Número de Pokémon evolução não encontrado.', status: 404 });
+    }
+
+    const pokemon_id_evolucao = verificaNumeroPokemonEvolucao.rows[0].pokemon_info_id;
+
+    const verificaGradeJaCadastrada = await pool.query(`
+      SELECT * FROM pokemon_evolucoes WHERE pokemon_info_id = $1 AND evolucao_pokemon_info_id = $2
+    `, [pokemon_id, pokemon_id_evolucao]);
 
     if (verificaGradeJaCadastrada.rows.length > 0) {
-      return res
-        .status(200)
-        .json({ Mensagem: "Grade evolutiva já cadastrada!", status: 400 });
+      return res.status(200).json({ Mensagem: "Grade evolutiva já cadastrada!", status: 400 });
     }
-    // Inserir nas tabelas
-    const cadastroPokemon = await pool.query(
-      `INSERT INTO pokemon_evolucoes (
-        pokemon_info_id,
-        evolucao_pokemon_info_id
-      ) VALUES ($1, $2) RETURNING pokemon_info_id`,
-      [
-        pokemon_id,
-        evolucao_pokemon_info_id
-      ]
-    );
-    const pokemon_info_id = cadastroPokemon.rows[0].pokemon_info_id;
 
+    let nivel = 5;
+
+    // Inserir nas tabelas
+    await pool.query(
+      `INSERT INTO pokemon_evolucoes (pokemon_info_id, evolucao_pokemon_info_id, nivel)
+       VALUES ($1, $2, $3)`,
+      [pokemon_id, pokemon_id_evolucao, nivel]
+    );
 
     return res.status(200).json({ Mensagem: 'Grade cadastrada com sucesso!' });
   } catch (erro) {
     return res.status(500).json({ Mensagem: 'Erro ao cadastrar grade pokemon.', erro });
   }
 };
+
 
 const ExcluirGradeEvolutivaPokemon = async (req, res) => {
   try {

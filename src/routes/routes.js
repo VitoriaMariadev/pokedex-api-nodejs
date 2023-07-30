@@ -94,10 +94,10 @@ route.delete("/excluir_usuario/:id", removeUsuarioID)
 
 // grade evolutiva
 // rotas mostrar
-route.post("/mostrar_grade/", MostrarGradeEvolutivaPokemon)
+route.post("/mostrar_grade", MostrarGradeEvolutivaPokemon)
 
 // rotas cadastrar
-route.get("/cadastrar_grade", CadastrarGradeEvolutivaPokemon)
+route.post("/cadastrar_grade", CadastrarGradeEvolutivaPokemon)
 
 // rotas excluir
 route.delete("/excluir_grade", ExcluirGradeEvolutivaPokemon)
